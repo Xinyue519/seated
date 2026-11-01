@@ -62,6 +62,28 @@ backend/
     └── seed/             demo dataset (21 NYC restaurants) + workflow definitions
 ```
 
+## Database schema
+
+Source of truth: `internal/database/migrations/001_init.sql` (applied automatically by
+`make seed` / `cmd/server` on startup). Summary:
+
+| Table | Purpose |
+|---|---|
+| `users` | accounts (email/password hash/role); unique on lower(email) |
+| `restaurants` | internal restaurant schema everything maps into; `location` is PostGIS `geography(Point)` for radius queries, `source` (jsonb) keeps attribution |
+| `restaurant_embeddings` | one `vector(1536)` per restaurant (text-embedding-3-small) + HNSW cosine index, for `find_similar_restaurants` |
+| `user_preferences` | 1:1 with `users`: cuisines, price levels, dietary, party size |
+| `saved_restaurants` | user ↔ restaurant bookmarks (composite PK) |
+| `visits` | past visits, optional thumbs up/down feedback |
+| `availability_slots` | mock provider inventory: one row = one bookable table at `(restaurant, date, time)` |
+| `reservations` | bookings; unique on `(restaurant, date, time)` while `status = 'confirmed'` so slots can't double-book; `idempotency_key` makes retries safe |
+| `conversations` / `messages` | chat history persisted per user; `messages.payload` carries the UI extras (chips, results, confirm card) |
+| `workflows` | admin-defined, versioned workflow definitions; the agent only runs `status = 'published'` ones |
+| `workflow_runs` / `workflow_steps` | one run per agent task, one step per tool call (inputs/outputs/timing/status) — the trace shown in the UI and the audit log |
+
+Everything else (foreign keys, checks, indexes) is in the migration file itself — read that
+instead of this table going stale.
+
 ## How the agent works
 
 One agent, predefined tools, no framework (`internal/agent/orchestrator.go`):
