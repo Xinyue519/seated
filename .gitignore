@@ -1,0 +1,23 @@
+# ---- secrets ---------------------------------------------------------------
+# Any .env file anywhere is ignored...
+.env
+.env.*
+*.env
+# ...except templates and the frontend's mode files, which contain no secrets.
+!.env.example
+!frontend/.env
+!frontend/.env.mock
+
+# Put browser-exposed keys (e.g. VITE_GOOGLE_MAPS_API_KEY) in frontend/.env.local,
+# which is ignored by the rule above.
+
+# ---- build output ------------------------------------------------------------
+backend/bin/
+*.test
+*.out
+coverage.*
+
+# ---- OS / editor -----------------------------------------------------------------
+.DS_Store
+.idea/
+.vscode/

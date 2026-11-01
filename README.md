@@ -8,18 +8,32 @@ modifies, or cancels reservations on your behalf.
 
 ```
 seated/
-└── frontend/   React + TypeScript + Tailwind (Vite) client, runnable standalone against mock data
+├── frontend/          React + TypeScript + Tailwind (Vite); runs standalone on mock data too
+├── backend/           Go API + agent (OpenAI tool calling), Postgres + pgvector + PostGIS, Redis
+├── infrastructure/    Docker images (Kubernetes manifests later)
+└── docker-compose.yml local Postgres + Redis
 ```
-
-There's no backend in this repo yet — `frontend/` runs fully self-contained in mock mode (mock
-restaurants, mock reservations, a scripted mock agent) so the UI can be built and demoed without a
-real API. See [`frontend/README.md`](frontend/README.md) for setup, the real-vs-mock architecture,
-and the proposed API contract for when a backend lands.
 
 ## Quickstart
 
+**Just the UI, no backend:**
+
 ```bash
-cd frontend
-npm install
-npm run start:mock
+cd frontend && npm install && npm run start:mock
 ```
+
+**Full stack:**
+
+```bash
+cp backend/.env.example backend/.env    # add your OPENAI_API_KEY
+docker compose up -d                    # Postgres + Redis
+cd backend && make seed && make run     # API on :8080
+cd frontend && npm start                # UI on :5173 (proxies /api)
+```
+
+See [`backend/README.md`](backend/README.md) and [`frontend/README.md`](frontend/README.md).
+
+## Secrets
+
+Keys go in `backend/.env` (gitignored). Only `.env.example` templates are committed. If a key is
+ever committed by accident, rotate it: removing it from a later commit doesn't remove it from history.

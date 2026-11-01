@@ -32,7 +32,7 @@ up in the real build.
 
 ```
 src/
-├── config.ts               env flags (useMocks, apiBaseUrl)
+├── config.ts               env flags (useMocks, apiBaseUrl, Google Maps key + Map ID)
 ├── types.ts                domain types: restaurants, reservations, messages, workflow runs
 ├── services/
 │   ├── types.ts            SeatedApi + AgentClient contracts, Bootstrap, AgentTurn

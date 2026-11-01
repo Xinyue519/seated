@@ -1,0 +1,31 @@
+# Local dev dependencies: Postgres (pgvector + PostGIS) and Redis.
+#   docker compose up -d
+# The Go API runs on your machine (see backend/README.md).
+services:
+  postgres:
+    build: ./infrastructure/docker/postgres
+    image: seated-postgres:16
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-seated}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-seated}
+      POSTGRES_DB: ${POSTGRES_DB:-seated}
+    ports:
+      - "127.0.0.1:5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-seated}"]
+      interval: 3s
+      retries: 20
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "127.0.0.1:6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 3s
+      retries: 20
+
+volumes:
+  pgdata:
