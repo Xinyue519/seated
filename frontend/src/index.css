@@ -1,0 +1,63 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html,
+  body,
+  #root {
+    height: 100%;
+  }
+  body {
+    @apply bg-ground font-sans text-[14px] leading-[1.45] text-ink antialiased;
+  }
+  button:not(:disabled) {
+    cursor: pointer;
+  }
+}
+
+@layer components {
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-[10px] font-medium transition-colors disabled:opacity-50;
+  }
+  .btn-primary {
+    @apply btn h-11 bg-ink px-[18px] font-semibold text-white hover:bg-black;
+  }
+  .btn-accent {
+    @apply btn h-11 bg-accent px-[18px] font-semibold text-white hover:bg-accent-dark;
+  }
+  .btn-outline {
+    @apply btn h-10 border border-line2 bg-white px-3.5 text-[13px] text-ink hover:bg-panel;
+  }
+  .pill {
+    @apply inline-flex min-h-[34px] items-center rounded-full border px-3 text-[13px] font-medium transition-colors;
+  }
+  .pill-on {
+    @apply pill border-ink bg-ink text-white;
+  }
+  .pill-off {
+    @apply pill border-line2 bg-white text-ink hover:bg-panel;
+  }
+  .field {
+    @apply h-11 rounded-[10px] border border-line2 bg-white px-3 text-[14px] text-ink outline-none focus:border-ink;
+  }
+  .card {
+    @apply rounded-[14px] border border-line bg-white;
+  }
+  .eyebrow {
+    @apply text-[13px] font-semibold uppercase tracking-[0.04em] text-muted;
+  }
+}
+
+@keyframes pulse-dot {
+  0%,
+  100% {
+    opacity: 0.35;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+.animate-pulse-dot {
+  animation: pulse-dot 1s ease-in-out infinite;
+}
