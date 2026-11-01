@@ -24,6 +24,7 @@ export interface Restaurant {
   lng: number;
   tags: string[];
   description: string;
+  imageUrl?: string;
   vegetarian?: boolean;
   /** Demo flag: never has availability (exercises the no-availability fallback). */
   alwaysFull?: boolean;

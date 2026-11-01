@@ -25,6 +25,7 @@ export default function RestaurantPopover({ restaurant: r, point, date, onPickSl
 
   return (
     <div
+      data-no-pan="true"
       onClick={(e) => e.stopPropagation()}
       className="absolute z-10 w-[300px] max-w-[calc(100%-32px)] overflow-hidden rounded-[14px] bg-white shadow-pop"
       style={{
@@ -33,8 +34,12 @@ export default function RestaurantPopover({ restaurant: r, point, date, onPickSl
         transform: above ? 'translate(-50%, calc(-100% - 44px))' : 'translate(-50%, 24px)',
       }}
     >
-      <div className="relative flex h-24 items-center justify-center bg-photo text-xs text-muted">
-        [Photo]
+      <div className="relative h-24 bg-photo">
+        {r.imageUrl ? (
+          <img src={r.imageUrl} alt={r.name} className="h-full w-full object-cover" />
+        ) : (
+          <div className="flex h-full items-center justify-center text-xs text-muted">[Photo]</div>
+        )}
         <button
           type="button"
           aria-label="Close"

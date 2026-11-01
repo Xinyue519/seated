@@ -1,4 +1,4 @@
-import { useState, type CSSProperties, type MouseEvent, type ReactNode } from 'react';
+import { useRef, useState, type CSSProperties, type MouseEvent, type PointerEvent, type ReactNode } from 'react';
 import type { Restaurant } from '@/types';
 import { findRestaurant, NEIGHBORHOODS } from '@/data/restaurants';
 import { project, type Point } from '@/lib/geo';
@@ -26,13 +26,50 @@ interface Props {
 const MIN_ZOOM = 1;
 const MAX_ZOOM = 3;
 
+const clamp = (v: number, min: number, max: number) => Math.min(max, Math.max(min, v));
+
 export default function MapView({ pins, toolbar, slotDate, onPickSlot }: Props) {
   const { state, store } = useApp();
   const [zoom, setZoom] = useState(1);
   const [center, setCenter] = useState<Point>({ x: 50, y: 50 });
+  const [panning, setPanning] = useState(false);
+  const dragRef = useRef<{ x: number; y: number; center: Point } | null>(null);
+  const didPanRef = useRef(false);
 
   const toScreen = (p: Point): Point => ({ x: 50 + (p.x - center.x) * zoom, y: 50 + (p.y - center.y) * zoom });
   const visible = (p: Point) => p.x > -3 && p.x < 103 && p.y > -3 && p.y < 103;
+
+  const handlePointerDown = (e: PointerEvent<HTMLElement>) => {
+    if (e.button !== 0) return;
+    if ((e.target as HTMLElement).closest('button, [data-no-pan]')) return;
+    dragRef.current = { x: e.clientX, y: e.clientY, center };
+    didPanRef.current = false;
+    setPanning(true);
+    e.currentTarget.setPointerCapture(e.pointerId);
+  };
+  const handlePointerMove = (e: PointerEvent<HTMLElement>) => {
+    const drag = dragRef.current;
+    if (!drag) return;
+    const dx = e.clientX - drag.x;
+    const dy = e.clientY - drag.y;
+    if (Math.abs(dx) > 3 || Math.abs(dy) > 3) didPanRef.current = true;
+    const rect = e.currentTarget.getBoundingClientRect();
+    setCenter({
+      x: clamp(drag.center.x - (dx / rect.width) * 100 / zoom, 0, 100),
+      y: clamp(drag.center.y - (dy / rect.height) * 100 / zoom, 0, 100),
+    });
+  };
+  const handlePointerUp = () => {
+    dragRef.current = null;
+    setPanning(false);
+  };
+  const handleBackgroundClick = () => {
+    if (didPanRef.current) {
+      didPanRef.current = false;
+      return;
+    }
+    store.set({ selectedId: null });
+  };
 
   const zoomIn = () => {
     const sel = state.selectedId ? findRestaurant(state.selectedId) : undefined;
@@ -51,8 +88,13 @@ export default function MapView({ pins, toolbar, slotDate, onPickSlot }: Props) 
   return (
     <section
       aria-label="Map"
-      className="relative min-h-[480px] min-w-0 flex-[999_1_560px] overflow-hidden bg-map-land"
-      onClick={() => store.set({ selectedId: null })}
+      className={`relative min-h-[480px] min-w-0 flex-[999_1_560px] overflow-hidden bg-map-land ${panning ? 'cursor-grabbing select-none' : 'cursor-grab'}`}
+      style={{ touchAction: 'none' }}
+      onClick={handleBackgroundClick}
+      onPointerDown={handlePointerDown}
+      onPointerMove={handlePointerMove}
+      onPointerUp={handlePointerUp}
+      onPointerCancel={handlePointerUp}
     >
       <MapBackground
         style={{
@@ -84,6 +126,7 @@ export default function MapView({ pins, toolbar, slotDate, onPickSlot }: Props) 
 
       {toolbar && (
         <div
+          data-no-pan="true"
           className="pointer-events-none absolute left-4 right-4 top-4 z-[6] flex flex-wrap items-center gap-2"
           onClick={(e) => e.stopPropagation()}
         >
@@ -110,6 +153,7 @@ export default function MapView({ pins, toolbar, slotDate, onPickSlot }: Props) 
       )}
 
       <div
+        data-no-pan="true"
         className="absolute bottom-4 right-4 z-[7] flex flex-col overflow-hidden rounded-[10px] bg-white shadow-float"
         onClick={(e) => e.stopPropagation()}
       >

@@ -91,7 +91,9 @@ export default function SavedPage() {
                 key={r.id}
                 className={cx('flex items-center gap-3 border-b border-divider px-4 py-3', state.selectedId === r.id && 'bg-panel')}
               >
-                <div className="h-[52px] w-[52px] shrink-0 rounded-[10px] bg-photo" />
+                <div className="h-[52px] w-[52px] shrink-0 overflow-hidden rounded-[10px] bg-photo">
+                  {r.imageUrl && <img src={r.imageUrl} alt={r.name} className="h-full w-full object-cover" />}
+                </div>
                 <div className="flex min-w-0 flex-1 flex-col gap-0.5">
                   <div className="flex justify-between gap-2">
                     <button type="button" onClick={() => store.set({ selectedId: r.id })} className="text-left font-semibold hover:underline">
