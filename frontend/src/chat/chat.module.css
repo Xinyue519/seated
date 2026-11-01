@@ -2,7 +2,14 @@
 
 /* ---------- AgentPanel ---------- */
 .panel {
-  @apply flex min-h-[480px] min-w-0 max-w-full flex-[1_1_400px] flex-col border-l border-line bg-white md:min-h-0;
+  @apply relative flex min-h-[480px] min-w-0 max-w-full flex-[1_1_400px] flex-col border-l border-line bg-white md:min-h-0;
+}
+.resizeHandle {
+  @apply absolute bottom-0 left-0 top-0 z-10 w-2 -translate-x-1/2 cursor-col-resize touch-none;
+}
+.resizeHandle:hover,
+.resizeHandle:active {
+  @apply bg-ink/10;
 }
 .header {
   @apply flex items-center justify-between gap-3 border-b border-line px-4 py-3;
