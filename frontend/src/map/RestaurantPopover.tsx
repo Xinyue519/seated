@@ -23,7 +23,7 @@ export default function RestaurantPopover({ restaurant: r, point, date, onPickSl
   const saved = state.saved.includes(r.id);
   const above = point.y > 52;
   const left = Math.max(18, Math.min(82, point.x));
-
+  const website = r.website;
   return (
     <div
       data-no-pan="true"
@@ -53,10 +53,23 @@ export default function RestaurantPopover({ restaurant: r, point, date, onPickSl
       <div className={styles.popoverBody}>
         <div className={styles.popoverHeaderRow}>
           <div className={styles.popoverTitleBlock}>
-            <span className={styles.popoverName}>{r.name}</span>
+            <span className={styles.popoverName}>
+              {website ? (
+                <a href={website} target="_blank" rel="noopener noreferrer">
+                  {r.name}
+                </a>
+              ) : (
+                r.name
+              )}
+            </span>
             <span className={styles.popoverMeta}>
               {r.cuisine} · {price(r.priceLevel)} · {r.neighborhood}
             </span>
+            {website && (
+              <a href={website} target="_blank" rel="noopener noreferrer" className={styles.popoverWebsiteButton}>
+                Website
+              </a>
+            )}
           </div>
           <button
             type="button"

@@ -30,6 +30,7 @@ export interface Restaurant {
   alwaysFull?: boolean;
   /** Demo flag: first booking attempt fails with SLOT_TAKEN (exercises failure handling). */
   flakyBooking?: boolean;
+  website?: string;
 }
 
 export type ReservationStatus = 'confirmed' | 'cancelled';

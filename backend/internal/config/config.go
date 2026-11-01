@@ -20,6 +20,9 @@ type Config struct {
 	OpenAIBaseURL        string
 	OpenAIModel          string
 	OpenAIEmbeddingModel string
+
+	// Server-side only; used by cmd/import-places, never sent to the frontend.
+	GooglePlacesAPIKey string
 	// Upper bound on LLM tool-calling iterations per user turn.
 	AgentMaxSteps int
 	LLMTimeout    time.Duration
@@ -49,6 +52,7 @@ func Load() (*Config, error) {
 		OpenAIBaseURL:        strings.TrimRight(env("OPENAI_BASE_URL", "https://api.openai.com/v1"), "/"),
 		OpenAIModel:          env("OPENAI_MODEL", "gpt-4o-mini"),
 		OpenAIEmbeddingModel: env("OPENAI_EMBEDDING_MODEL", "text-embedding-3-small"),
+		GooglePlacesAPIKey:   strings.TrimSpace(os.Getenv("GOOGLE_PLACES_API_KEY")),
 		AgentMaxSteps:        envInt("AGENT_MAX_STEPS", 8),
 		LLMTimeout:           envDuration("LLM_TIMEOUT", 45*time.Second),
 		SessionTTL:           envDuration("SESSION_TTL", 7*24*time.Hour),

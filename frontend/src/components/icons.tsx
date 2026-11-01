@@ -23,6 +23,12 @@ export const ChairIcon = (p: IconProps) => (
     <path d="M7 3v18M7 13h10v8M7 8h5" />
   </svg>
 );
+export const SearchIcon = (p: IconProps) => (
+  <svg {...base(p)}>
+    <circle cx="11" cy="11" r="7" />
+    <path d="m21 21-4.3-4.3" />
+  </svg>
+);
 export const PlusIcon = (p: IconProps) => (
   <svg {...base(p)}>
     <path d="M12 5v14M5 12h14" />

@@ -18,6 +18,10 @@ make up                       # = docker compose up -d (from the repo root compo
 # 3. schema + demo data (+ restaurant embeddings when the key is set)
 make seed
 
+# 3b. optional: real addresses/coords/hours/photos for the 21 seeded restaurants
+#     (needs GOOGLE_PLACES_API_KEY in .env; costs API calls, so run occasionally, not on every seed)
+make import-places
+
 # 4. API on :8080
 make run
 
@@ -38,6 +42,7 @@ configured, and similarity search falls back to cuisine/tag matching.
 | `OPENAI_EMBEDDING_MODEL` | no | default `text-embedding-3-small` (1536 dims, matches the schema) |
 | `DATABASE_URL`, `REDIS_URL` | no | defaults match `docker-compose.yml` |
 | `SEED_ADMIN_EMAIL` / `SEED_ADMIN_PASSWORD` | no | creates an admin on `make seed` |
+| `GOOGLE_PLACES_API_KEY` | no | server-side only; enables `make import-places` (real address/coords/hours/photos) |
 | `COOKIE_SECURE` | prod | `true` behind HTTPS |
 
 Secrets live only in `backend/.env`, which is gitignored (see the repo-root `.gitignore`).
@@ -49,10 +54,12 @@ Commit changes to `.env.example` instead.
 backend/
 ├── cmd/server            API entrypoint (migrates on start)
 ├── cmd/seed              migrations + demo data + embeddings
+├── cmd/import-places     one-off: enrich seeded restaurants from Google Places
 └── internal/
     ├── agent/            orchestrator loop, tool registry, prompt, conversation store
     ├── api/              routes, session/role middleware, handlers
     ├── llm/              Client interface + OpenAI implementation (plain HTTP)
+    ├── places/           Google Places (New) client — Text Search + Photo Media (plain HTTP)
     ├── restaurants/      filters (SQL/PostGIS) + similarity (pgvector)
     ├── reservations/     Provider interface + Postgres-backed mock provider
     ├── workflows/        workflow runs + steps (trace / audit log), published workflows
@@ -70,7 +77,7 @@ Source of truth: `internal/database/migrations/001_init.sql` (applied automatica
 | Table | Purpose |
 |---|---|
 | `users` | accounts (email/password hash/role); unique on lower(email) |
-| `restaurants` | internal restaurant schema everything maps into; `location` is PostGIS `geography(Point)` for radius queries, `source` (jsonb) keeps attribution |
+| `restaurants` | internal restaurant schema everything maps into; `location` is PostGIS `geography(Point)` for radius queries, `source` (jsonb) keeps attribution. `name`/`description`/`tags`/`cuisine_group`/`price_level` are hand-curated; `lat`/`lng`/`phone`/`website`/`hours`/`image_url` can be filled in from real data via `make import-places` |
 | `restaurant_embeddings` | one `vector(1536)` per restaurant (text-embedding-3-small) + HNSW cosine index, for `find_similar_restaurants` |
 | `user_preferences` | 1:1 with `users`: cuisines, price levels, dietary, party size |
 | `saved_restaurants` | user ↔ restaurant bookmarks (composite PK) |
@@ -134,5 +141,6 @@ the backend executes with an idempotency key. Other reliability pieces:
 - gRPC between services: everything is one process for now, as the plan suggests.
 - Workflow Builder UI (phase 10): the `workflows` table and the published check are in place.
 - Real providers (OpenTable / Resy) behind `reservations.Provider`.
-- Google Maps / Places: the frontend map is still the drawn placeholder.
+- `phone`/`website`/`hours` are populated by `make import-places` but not yet returned by
+  `internal/restaurants` or shown in the frontend.
 - Streaming agent responses, signup, email notifications, rate limiting.

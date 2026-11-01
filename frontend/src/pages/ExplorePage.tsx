@@ -2,6 +2,7 @@ import { allRestaurants } from '@/data/restaurants';
 import { useApp } from '@/store/AppStore';
 import { resolveDay } from '@/lib/dates';
 import MapView, { type PinSpec } from '@/map/MapView';
+import PlacesSearch from '@/map/PlacesSearch';
 import AgentPanel from '@/chat/AgentPanel';
 import styles from './pages.module.css';
 
@@ -23,17 +24,20 @@ export default function ExplorePage() {
         slotDate={resolveDay(state.context.day)}
         onPickSlot={(id, time, date) => agent.pickSlot(id, time, date)}
         toolbar={
-          <div className={styles.exploreToolbar}>
-            <span className={styles.exploreToolbarDot} />
-            <span className={styles.exploreToolbarLabel}>
-              {filter ? `${filter.length} results from Ask Seated` : `${restaurants.length} bookable restaurants`}
-            </span>
-            {filter && (
-              <button type="button" onClick={() => store.set({ mapFilter: null })} className={styles.exploreShowAllButton}>
-                Show all
-              </button>
-            )}
-          </div>
+          <>
+            <PlacesSearch />
+            <div className={styles.exploreToolbar}>
+              <span className={styles.exploreToolbarDot} />
+              <span className={styles.exploreToolbarLabel}>
+                {filter ? `${filter.length} results from Ask Seated` : `${restaurants.length} bookable restaurants`}
+              </span>
+              {filter && (
+                <button type="button" onClick={() => store.set({ mapFilter: null })} className={styles.exploreShowAllButton}>
+                  Show all
+                </button>
+              )}
+            </div>
+          </>
         }
       />
       <AgentPanel />

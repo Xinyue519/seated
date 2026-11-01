@@ -30,6 +30,7 @@ type Restaurant struct {
 	Description  string   `json:"description"`
 	ImageURL     *string  `json:"imageUrl,omitempty"`
 	Vegetarian   bool     `json:"vegetarian,omitempty"`
+	Website      *string  `json:"website,omitempty"`
 }
 
 // Neighborhood centers used for "near X" searches.
@@ -76,11 +77,11 @@ type Repo struct{ pool *pgxpool.Pool }
 
 func NewRepo(pool *pgxpool.Pool) *Repo { return &Repo{pool: pool} }
 
-const cols = `r.id, r.name, r.cuisine, r.cuisine_group, r.neighborhood, r.price_level, r.lat, r.lng, r.tags, r.description, r.image_url, r.vegetarian`
+const cols = `r.id, r.name, r.cuisine, r.cuisine_group, r.neighborhood, r.price_level, r.lat, r.lng, r.tags, r.description, r.image_url, r.vegetarian, r.website`
 
 func scan(row pgx.Row) (Restaurant, error) {
 	var x Restaurant
-	err := row.Scan(&x.ID, &x.Name, &x.Cuisine, &x.Group, &x.Neighborhood, &x.PriceLevel, &x.Lat, &x.Lng, &x.Tags, &x.Description, &x.ImageURL, &x.Vegetarian)
+	err := row.Scan(&x.ID, &x.Name, &x.Cuisine, &x.Group, &x.Neighborhood, &x.PriceLevel, &x.Lat, &x.Lng, &x.Tags, &x.Description, &x.ImageURL, &x.Vegetarian, &x.Website)
 	return x, err
 }
 
@@ -254,7 +255,7 @@ func (r *Repo) similar(ctx context.Context, sql string, args ...any) ([]Scored, 
 	out, err := pgx.CollectRows(rows, func(row pgx.CollectableRow) (Scored, error) {
 		var s Scored
 		x := &s.Restaurant
-		err := row.Scan(&x.ID, &x.Name, &x.Cuisine, &x.Group, &x.Neighborhood, &x.PriceLevel, &x.Lat, &x.Lng, &x.Tags, &x.Description, &x.ImageURL, &x.Vegetarian, &s.Similarity)
+		err := row.Scan(&x.ID, &x.Name, &x.Cuisine, &x.Group, &x.Neighborhood, &x.PriceLevel, &x.Lat, &x.Lng, &x.Tags, &x.Description, &x.ImageURL, &x.Vegetarian, &x.Website, &s.Similarity)
 		return s, err
 	})
 	if out == nil {
