@@ -37,6 +37,15 @@
 .avatarLinkActive {
   @apply ring-2 ring-ink;
 }
+.avatarMenuWrap {
+  @apply relative;
+}
+.avatarMenu {
+  @apply absolute right-0 top-[calc(100%+8px)] z-20 w-44 overflow-hidden rounded-[14px] border border-line bg-white py-1.5 shadow-pop;
+}
+.avatarMenuItem {
+  @apply block w-full px-3.5 py-2.5 text-left text-[13px] font-medium text-ink hover:bg-panel;
+}
 .mainArea {
   @apply flex min-h-0 flex-1 flex-col;
 }
