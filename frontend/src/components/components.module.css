@@ -1,0 +1,81 @@
+/* Shared styles for src/components/ — AppLayout, Logo, SlotButton, Toast. */
+
+/* AppLayout */
+.layoutRoot {
+  @apply flex min-h-screen flex-col md:h-screen;
+}
+.header {
+  @apply flex min-h-14 shrink-0 flex-wrap items-center justify-between gap-4 border-b border-line bg-white px-5;
+}
+.headerLeft {
+  @apply flex flex-wrap items-center gap-7;
+}
+.logoLink {
+  @apply px-1 py-1.5;
+}
+.nav {
+  @apply flex gap-1;
+}
+.navLink {
+  @apply rounded-lg px-3 py-2 font-medium;
+}
+.navLinkActive {
+  @apply bg-chip text-ink;
+}
+.navLinkInactive {
+  @apply text-muted hover:text-ink;
+}
+.headerRight {
+  @apply flex items-center gap-2.5;
+}
+.mockBadge {
+  @apply rounded-md border border-dashed border-[#B9B5AB] px-2 py-0.5 text-xs text-muted;
+}
+.avatarLink {
+  @apply flex h-9 w-9 items-center justify-center rounded-full bg-avatar text-[13px] font-semibold;
+}
+.avatarLinkActive {
+  @apply ring-2 ring-ink;
+}
+.mainArea {
+  @apply flex min-h-0 flex-1 flex-col;
+}
+
+/* Logo */
+.logo {
+  @apply flex items-center gap-2 font-bold tracking-[-0.01em];
+}
+.logoSmall {
+  @apply text-[16px];
+}
+.logoLarge {
+  @apply text-[18px];
+}
+.logoBadge {
+  @apply flex items-center justify-center bg-ink text-white;
+}
+.logoBadgeSmall {
+  @apply h-6 w-6 rounded-md;
+}
+.logoBadgeLarge {
+  @apply h-7 w-7 rounded-[7px];
+}
+
+/* SlotButton */
+.slotButton {
+  @apply h-[34px] rounded-lg px-3 text-[13px] font-medium transition-colors disabled:cursor-default;
+}
+.slotButtonSelected {
+  @apply border border-ink bg-ink text-white;
+}
+.slotButtonHinted {
+  @apply border-[1.5px] border-ink bg-white text-ink;
+}
+.slotButtonDefault {
+  @apply border border-line bg-white text-ink hover:border-ink;
+}
+
+/* Toast */
+.toast {
+  @apply fixed bottom-6 left-1/2 z-50 -translate-x-1/2 rounded-[10px] bg-ink px-[18px] py-3 font-medium text-white shadow-[0_8px_24px_rgba(23,25,30,0.25)];
+}

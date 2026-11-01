@@ -3,7 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import type { CuisineGroup, Dietary, PriceLevel } from '@/types';
 import { CUISINE_LABELS } from '@/data/restaurants';
 import { useApp } from '@/store/AppStore';
-import { guests, price } from '@/lib/format';
+import { cx, guests, price } from '@/lib/format';
+import common from '@/styles/common.module.css';
+import styles from './pages.module.css';
 
 const DIETARY: Array<{ id: Dietary; label: string }> = [
   { id: 'vegetarian', label: 'Vegetarian' },
@@ -36,46 +38,46 @@ export default function SettingsPage() {
   };
 
   return (
-    <main className="mx-auto flex w-full max-w-[880px] flex-1 flex-col gap-5 overflow-y-auto px-6 pb-16 pt-10">
-      <h1 className="text-[28px] font-semibold tracking-[-0.02em]">Settings</h1>
+    <main className={styles.settingsMain}>
+      <h1 className={styles.settingsTitle}>Settings</h1>
 
-      <section aria-labelledby="h-profile" className="card flex flex-col gap-5 p-6">
-        <h2 id="h-profile" className="text-[17px] font-semibold">
+      <section aria-labelledby="h-profile" className={cx(common.card, styles.settingsProfileSection)}>
+        <h2 id="h-profile" className={styles.settingsSectionHeading}>
           Profile
         </h2>
-        <div className="grid gap-4 [grid-template-columns:repeat(auto-fit,minmax(min(240px,100%),1fr))]">
-          <label className="flex flex-col gap-1.5">
-            <span className="text-[13px] font-medium">Name</span>
+        <div className={styles.settingsProfileGrid}>
+          <label className={styles.settingsFieldGroup}>
+            <span className={styles.settingsFieldLabel}>Name</span>
             <input
-              className="field"
+              className={common.field}
               value={state.user.name}
               onChange={(e) => store.set((s) => ({ user: { ...s.user, name: e.target.value } }))}
             />
           </label>
-          <label className="flex flex-col gap-1.5">
-            <span className="text-[13px] font-medium">Email</span>
+          <label className={styles.settingsFieldGroup}>
+            <span className={styles.settingsFieldLabel}>Email</span>
             <input
-              className="field"
+              className={common.field}
               type="email"
               value={state.user.email}
               onChange={(e) => store.set((s) => ({ user: { ...s.user, email: e.target.value } }))}
             />
           </label>
         </div>
-        <span className="text-[13px] text-muted">Reservations are made under this name.</span>
+        <span className={styles.settingsHelperText}>Reservations are made under this name.</span>
       </section>
 
-      <section aria-labelledby="h-dining" className="card flex flex-col gap-6 p-6">
-        <div className="flex flex-col gap-1">
-          <h2 id="h-dining" className="text-[17px] font-semibold">
+      <section aria-labelledby="h-dining" className={cx(common.card, styles.settingsDiningSection)}>
+        <div className={styles.settingsDiningHeading}>
+          <h2 id="h-dining" className={styles.settingsSectionHeading}>
             Dining preferences
           </h2>
-          <p className="text-muted">Ask Seated uses these when it ranks restaurants.</p>
+          <p className={styles.settingsDiningSubtitle}>Ask Seated uses these when it ranks restaurants.</p>
         </div>
 
         <fieldset>
-          <legend className="mb-2.5 text-[13px] font-medium">Favorite cuisines</legend>
-          <div className="flex flex-wrap gap-2">
+          <legend className={styles.settingsLegend}>Favorite cuisines</legend>
+          <div className={styles.settingsPillRow}>
             {(Object.keys(CUISINE_LABELS) as CuisineGroup[]).map((g) => {
               const on = prefs.cuisines.includes(g);
               return (
@@ -84,7 +86,7 @@ export default function SettingsPage() {
                   type="button"
                   aria-pressed={on}
                   onClick={() => setPrefs({ cuisines: toggle(prefs.cuisines, g) })}
-                  className={on ? 'pill-on' : 'pill-off'}
+                  className={on ? common.pillOn : common.pillOff}
                 >
                   {CUISINE_LABELS[g]}
                 </button>
@@ -94,8 +96,8 @@ export default function SettingsPage() {
         </fieldset>
 
         <fieldset>
-          <legend className="mb-2.5 text-[13px] font-medium">Price range</legend>
-          <div className="flex flex-wrap gap-2">
+          <legend className={styles.settingsLegend}>Price range</legend>
+          <div className={styles.settingsPillRow}>
             {([1, 2, 3, 4] as PriceLevel[]).map((n) => {
               const on = prefs.priceLevels.includes(n);
               return (
@@ -104,7 +106,7 @@ export default function SettingsPage() {
                   type="button"
                   aria-pressed={on}
                   onClick={() => setPrefs({ priceLevels: toggle(prefs.priceLevels, n) })}
-                  className={`${on ? 'pill-on' : 'pill-off'} min-w-16 justify-center`}
+                  className={cx(on ? common.pillOn : common.pillOff, styles.settingsPriceOption)}
                 >
                   {price(n)}
                 </button>
@@ -114,13 +116,13 @@ export default function SettingsPage() {
         </fieldset>
 
         <fieldset>
-          <legend className="mb-2.5 text-[13px] font-medium">Dietary needs</legend>
-          <div className="grid gap-2 [grid-template-columns:repeat(auto-fit,minmax(min(160px,100%),1fr))]">
+          <legend className={styles.settingsLegend}>Dietary needs</legend>
+          <div className={styles.settingsDietaryGrid}>
             {DIETARY.map((d) => (
-              <label key={d.id} className="flex min-h-11 items-center gap-2.5 rounded-[10px] border border-line px-3">
+              <label key={d.id} className={styles.settingsDietaryOption}>
                 <input
                   type="checkbox"
-                  className="h-4 w-4 accent-ink"
+                  className={styles.settingsCheckbox}
                   checked={prefs.dietary.includes(d.id)}
                   onChange={() => setPrefs({ dietary: toggle(prefs.dietary, d.id) })}
                 />
@@ -130,23 +132,23 @@ export default function SettingsPage() {
           </div>
         </fieldset>
 
-        <div className="flex flex-col gap-2">
-          <span className="text-[13px] font-medium">Usual party size</span>
-          <div className="flex items-center gap-2">
+        <div className={styles.settingsPartySizeGroup}>
+          <span className={styles.settingsFieldLabel}>Usual party size</span>
+          <div className={styles.settingsPartySizeRow}>
             <button
               type="button"
               aria-label="Fewer guests"
               onClick={() => setPrefs({ partySize: Math.max(1, prefs.partySize - 1) })}
-              className="h-11 w-11 rounded-[10px] border border-line2 bg-white text-lg font-medium"
+              className={styles.settingsStepperButton}
             >
               −
             </button>
-            <span className="min-w-20 text-center font-medium">{guests(prefs.partySize)}</span>
+            <span className={styles.settingsPartySizeValue}>{guests(prefs.partySize)}</span>
             <button
               type="button"
               aria-label="More guests"
               onClick={() => setPrefs({ partySize: Math.min(12, prefs.partySize + 1) })}
-              className="h-11 w-11 rounded-[10px] border border-line2 bg-white text-lg font-medium"
+              className={styles.settingsStepperButton}
             >
               +
             </button>
@@ -154,27 +156,27 @@ export default function SettingsPage() {
         </div>
       </section>
 
-      <section aria-labelledby="h-security" className="card flex flex-col gap-4 p-6">
-        <h2 id="h-security" className="text-[17px] font-semibold">
+      <section aria-labelledby="h-security" className={cx(common.card, styles.settingsSecuritySection)}>
+        <h2 id="h-security" className={styles.settingsSectionHeading}>
           Security
         </h2>
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <span className="text-muted">Signed in as {state.user.email}</span>
+        <div className={styles.settingsSecurityRow}>
+          <span className={styles.settingsSignedInAs}>Signed in as {state.user.email}</span>
           <button
             type="button"
             onClick={async () => {
               await logout();
               navigate('/login');
             }}
-            className="btn-outline text-[14px] text-danger"
+            className={cx(common.btnOutline, styles.settingsLogoutButton)}
           >
             Log out
           </button>
         </div>
       </section>
 
-      <div className="flex justify-end">
-        <button type="button" onClick={save} disabled={saving} className="btn-primary">
+      <div className={styles.settingsSaveRow}>
+        <button type="button" onClick={save} disabled={saving} className={common.btnPrimary}>
           {saving ? 'Saving…' : 'Save changes'}
         </button>
       </div>

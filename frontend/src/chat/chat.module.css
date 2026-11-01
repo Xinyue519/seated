@@ -1,0 +1,280 @@
+/* Shared style file for frontend/src/chat/ — one module for the whole folder. */
+
+/* ---------- AgentPanel ---------- */
+.panel {
+  @apply flex min-h-[480px] min-w-0 max-w-full flex-[1_1_400px] flex-col border-l border-line bg-white md:min-h-0;
+}
+.header {
+  @apply flex items-center justify-between gap-3 border-b border-line px-4 py-3;
+}
+.headerTitles {
+  @apply flex min-w-0 flex-col;
+}
+.title {
+  @apply text-[15px] font-semibold;
+}
+.subtitle {
+  @apply truncate text-xs text-muted;
+}
+.tabList {
+  @apply flex gap-0.5 rounded-lg bg-chip p-[3px];
+}
+.tabButton {
+  @apply h-8 rounded-md px-3 text-[13px] font-medium;
+}
+.tabButtonActive {
+  @apply bg-white text-ink shadow-[0_1px_2px_rgba(23,25,30,0.1)];
+}
+.tabButtonInactive {
+  @apply text-muted;
+}
+.messageList {
+  @apply flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto px-4 py-5;
+}
+.busyRow {
+  @apply flex items-center gap-2 font-mono text-xs text-muted;
+}
+.busyDot {
+  @apply h-2 w-2 rounded-full bg-accent;
+  /* `pulse-dot` keyframes are defined globally in index.css; not a Tailwind
+     utility, so it can't go through @apply — set directly instead. */
+  animation: pulse-dot 1s ease-in-out infinite;
+}
+
+/* ---------- Composer ---------- */
+.form {
+  @apply flex flex-col gap-2 border-t border-line px-4 pb-4 pt-3;
+}
+.suggestions {
+  @apply flex flex-wrap gap-1.5;
+}
+.suggestionButton {
+  @apply min-h-8 rounded-full border border-line bg-white px-3 py-1 text-left text-[13px] hover:border-line2;
+}
+.inputRow {
+  @apply flex items-center gap-2 rounded-xl border border-line2 py-1.5 pl-3.5 pr-1.5 focus-within:border-ink;
+}
+.srOnly {
+  @apply sr-only;
+}
+.input {
+  @apply h-8 min-w-0 flex-1 bg-transparent outline-none;
+}
+.sendButton {
+  @apply flex h-9 w-9 items-center justify-center rounded-[9px] bg-ink text-white disabled:opacity-40;
+}
+
+/* ---------- ConfirmCard ---------- */
+.confirmCard {
+  @apply flex flex-col gap-3.5 rounded-xl border-[1.5px] p-4;
+}
+.confirmCardOpen {
+  @apply border-ink;
+}
+.confirmCardClosed {
+  @apply border-line;
+}
+.cardHeader {
+  @apply flex flex-col gap-0.5;
+}
+.cardTitle {
+  @apply text-base font-semibold;
+}
+.detailGrid {
+  @apply grid grid-cols-[auto_1fr] gap-x-4 gap-y-1.5 text-[13px];
+}
+.detailRow {
+  @apply contents;
+}
+.detailLabel {
+  @apply text-muted;
+}
+.detailValue {
+  @apply font-medium;
+}
+.actions {
+  @apply flex flex-wrap gap-2;
+}
+.confirmButton {
+  @apply h-11 flex-[1_1_140px] font-semibold text-white;
+}
+.confirmButtonDanger {
+  @apply bg-danger;
+}
+.confirmButtonAccent {
+  @apply bg-accent hover:bg-accent-dark;
+}
+.declineButton {
+  @apply h-11 flex-[1_1_100px] border border-line2 bg-white text-[14px];
+}
+.helperText {
+  @apply text-xs text-muted;
+}
+.statusText {
+  @apply text-[13px] font-semibold;
+}
+.statusDone {
+  @apply text-ok-text;
+}
+.statusFailed {
+  @apply text-danger;
+}
+.statusNeutral {
+  @apply text-muted;
+}
+
+/* ---------- MessageItem ---------- */
+.userBubble {
+  @apply max-w-[85%] self-end whitespace-pre-line rounded-[14px_14px_4px_14px] bg-ink px-3.5 py-2.5 text-white;
+}
+.agentMessage {
+  @apply flex flex-col gap-2.5;
+}
+.chipRow {
+  @apply flex flex-wrap gap-1.5;
+}
+.chip {
+  @apply rounded-md px-2 py-1 text-xs font-medium;
+}
+.chipMissing {
+  @apply border border-dashed border-[#B9B5AB] text-muted;
+}
+.chipFilled {
+  @apply bg-chip;
+}
+.toolsSummaryButton {
+  @apply flex min-h-8 items-center gap-2 self-start rounded-lg border border-line bg-white px-2.5 text-left font-mono text-xs text-muted hover:border-line2;
+}
+.toolsIconWarn {
+  @apply text-warn-icon;
+}
+.toolsIconOk {
+  @apply text-ok;
+}
+.messageText {
+  @apply whitespace-pre-line;
+}
+.resultsList {
+  @apply flex flex-col gap-2.5;
+}
+.viewReservationsButton {
+  @apply h-[38px] self-start;
+}
+
+/* ---------- ResultCard ---------- */
+.resultCard {
+  @apply flex flex-col gap-2.5 rounded-xl border p-3.5;
+}
+.resultCardSelected {
+  @apply border-ink;
+}
+.resultCardDefault {
+  @apply border-line;
+}
+.resultHeader {
+  @apply flex items-start gap-3;
+}
+.indexBadge {
+  @apply flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-accent text-xs font-bold text-white;
+}
+.titleColumn {
+  @apply flex min-w-0 flex-1 flex-col gap-0.5;
+}
+.nameRow {
+  @apply flex justify-between gap-2;
+}
+.nameButton {
+  @apply text-left text-[15px] font-semibold hover:underline;
+}
+.priceText {
+  @apply text-muted;
+}
+.metaText {
+  @apply text-[13px] text-muted;
+}
+.description {
+  @apply text-[13px];
+}
+.reasonsText {
+  @apply text-xs font-medium text-ok-text;
+}
+.slotsRow {
+  @apply flex flex-wrap gap-1.5;
+}
+.fullyBookedText {
+  @apply text-[13px] font-medium text-danger;
+}
+
+/* ---------- TracePanel ---------- */
+.tracePanel {
+  @apply flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto p-4;
+}
+.emptyText {
+  @apply text-muted;
+}
+.runCard {
+  @apply flex flex-col overflow-hidden rounded-xl border border-line;
+}
+.runHeader {
+  @apply flex items-center justify-between gap-2 border-b border-line bg-panel px-3 py-2.5;
+}
+.runTitles {
+  @apply flex min-w-0 flex-col;
+}
+.runWorkflowName {
+  @apply font-mono text-xs font-medium;
+}
+.runTitleText {
+  @apply text-xs text-muted;
+}
+.statusPill {
+  @apply whitespace-nowrap rounded-md px-2 py-0.5 text-xs font-semibold;
+}
+.pillNeutral {
+  @apply bg-chip text-muted;
+}
+.pillWaiting {
+  @apply bg-accent-soft text-accent-dark;
+}
+.pillDone {
+  @apply bg-ok-soft text-ok-text;
+}
+.pillRecovered {
+  @apply bg-warn-soft text-warn-text;
+}
+.stepsList {
+  @apply flex flex-col gap-1 px-3 py-2 font-mono text-xs;
+}
+.stepItem {
+  @apply flex flex-col gap-px py-0.5;
+}
+.stepRow {
+  @apply flex items-center gap-2.5;
+}
+.stepIcon {
+  @apply w-3.5 text-center font-bold;
+}
+.stepIconOk {
+  @apply text-ok;
+}
+.stepIconWaiting {
+  @apply text-accent;
+}
+.stepIconFailed {
+  @apply text-danger;
+}
+.stepName {
+  @apply flex-1;
+}
+.stepNameFailed {
+  @apply text-danger;
+}
+.stepNameWaiting {
+  @apply font-medium text-accent;
+}
+.stepDuration {
+  @apply text-muted;
+}
+.stepDetail {
+  @apply break-words pl-6 text-[11px] text-muted;
+}

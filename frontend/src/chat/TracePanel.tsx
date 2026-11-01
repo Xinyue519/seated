@@ -1,19 +1,20 @@
 import type { RunStatus, StepStatus } from '@/types';
 import { useApp } from '@/store/AppStore';
 import { cx } from '@/lib/format';
+import styles from './chat.module.css';
 
 const RUN_PILL: Record<RunStatus, { label: string; className: string }> = {
-  running: { label: 'Running', className: 'bg-chip text-muted' },
-  waiting: { label: 'Waiting on you', className: 'bg-accent-soft text-accent-dark' },
-  done: { label: 'Done', className: 'bg-ok-soft text-ok-text' },
-  recovered: { label: 'Recovered', className: 'bg-warn-soft text-warn-text' },
-  stopped: { label: 'Stopped', className: 'bg-chip text-muted' },
+  running: { label: 'Running', className: styles.pillNeutral },
+  waiting: { label: 'Waiting on you', className: styles.pillWaiting },
+  done: { label: 'Done', className: styles.pillDone },
+  recovered: { label: 'Recovered', className: styles.pillRecovered },
+  stopped: { label: 'Stopped', className: styles.pillNeutral },
 };
 
 const STEP_ICON: Record<StepStatus, { glyph: string; className: string }> = {
-  ok: { glyph: '✓', className: 'text-ok' },
-  waiting: { glyph: '●', className: 'text-accent' },
-  failed: { glyph: '✕', className: 'text-danger' },
+  ok: { glyph: '✓', className: styles.stepIconOk },
+  waiting: { glyph: '●', className: styles.stepIconWaiting },
+  failed: { glyph: '✕', className: styles.stepIconFailed },
 };
 
 /** Workflow execution dashboard: every request, intent, tool call, approval and error. */
@@ -21,46 +22,44 @@ export default function TracePanel() {
   const { state } = useApp();
 
   return (
-    <div className="flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto p-4">
+    <div className={styles.tracePanel}>
       {state.runs.length === 0 && (
-        <p className="text-muted">
+        <p className={styles.emptyText}>
           Every request you send shows up here: the workflow Ask Seated picked, each tool it ran, approvals and errors.
         </p>
       )}
       {state.runs.map((run) => {
         const pill = RUN_PILL[run.status];
         return (
-          <section key={run.id} className="flex flex-col overflow-hidden rounded-xl border border-line">
-            <div className="flex items-center justify-between gap-2 border-b border-line bg-panel px-3 py-2.5">
-              <div className="flex min-w-0 flex-col">
-                <span className="font-mono text-xs font-medium">{run.workflow}</span>
-                <span className="text-xs text-muted">{run.title}</span>
+          <section key={run.id} className={styles.runCard}>
+            <div className={styles.runHeader}>
+              <div className={styles.runTitles}>
+                <span className={styles.runWorkflowName}>{run.workflow}</span>
+                <span className={styles.runTitleText}>{run.title}</span>
               </div>
-              <span className={cx('whitespace-nowrap rounded-md px-2 py-0.5 text-xs font-semibold', pill.className)}>
-                {pill.label}
-              </span>
+              <span className={cx(styles.statusPill, pill.className)}>{pill.label}</span>
             </div>
-            <ol className="flex flex-col gap-1 px-3 py-2 font-mono text-xs">
+            <ol className={styles.stepsList}>
               {run.steps.map((st, i) => {
                 const icon = STEP_ICON[st.status];
                 return (
-                  <li key={i} className="flex flex-col gap-px py-0.5">
-                    <div className="flex items-center gap-2.5">
-                      <span className={cx('w-3.5 text-center font-bold', icon.className)}>{icon.glyph}</span>
+                  <li key={i} className={styles.stepItem}>
+                    <div className={styles.stepRow}>
+                      <span className={cx(styles.stepIcon, icon.className)}>{icon.glyph}</span>
                       <span
                         className={cx(
-                          'flex-1',
-                          st.status === 'failed' && 'text-danger',
-                          st.status === 'waiting' && 'font-medium text-accent',
+                          styles.stepName,
+                          st.status === 'failed' && styles.stepNameFailed,
+                          st.status === 'waiting' && styles.stepNameWaiting,
                         )}
                       >
                         {st.name}
                       </span>
                       {st.durationMs !== undefined && (
-                        <span className="text-muted">{(st.durationMs / 1000).toFixed(1)}s</span>
+                        <span className={styles.stepDuration}>{(st.durationMs / 1000).toFixed(1)}s</span>
                       )}
                     </div>
-                    {st.detail && <span className="break-words pl-6 text-[11px] text-muted">{st.detail}</span>}
+                    {st.detail && <span className={styles.stepDetail}>{st.detail}</span>}
                   </li>
                 );
               })}

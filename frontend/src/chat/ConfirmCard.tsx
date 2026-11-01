@@ -3,6 +3,8 @@ import { getRestaurant } from '@/data/restaurants';
 import { useApp } from '@/store/AppStore';
 import { formatDay } from '@/lib/dates';
 import { cx, guests } from '@/lib/format';
+import common from '@/styles/common.module.css';
+import styles from './chat.module.css';
 
 const STATUS_TEXT: Record<ConfirmRequest['state'], string> = {
   open: '',
@@ -29,28 +31,32 @@ export default function ConfirmCard({ messageId, request: c }: { messageId: stri
   return (
     <section
       aria-label={title}
-      className={cx('flex flex-col gap-3.5 rounded-xl border-[1.5px] p-4', c.state === 'open' ? 'border-ink' : 'border-line')}
+      className={cx(styles.confirmCard, c.state === 'open' ? styles.confirmCardOpen : styles.confirmCardClosed)}
     >
-      <div className="flex flex-col gap-0.5">
-        <span className="text-xs font-semibold uppercase tracking-[0.04em] text-muted">Needs your OK</span>
-        <span className="text-base font-semibold">{title}</span>
+      <div className={styles.cardHeader}>
+        <span className={common.eyebrow}>Needs your OK</span>
+        <span className={styles.cardTitle}>{title}</span>
       </div>
-      <dl className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-1.5 text-[13px]">
+      <dl className={styles.detailGrid}>
         {rows.map(([k, v]) => (
-          <div key={k} className="contents">
-            <dt className="text-muted">{k}</dt>
-            <dd className="font-medium">{v}</dd>
+          <div key={k} className={styles.detailRow}>
+            <dt className={styles.detailLabel}>{k}</dt>
+            <dd className={styles.detailValue}>{v}</dd>
           </div>
         ))}
       </dl>
       {c.state === 'open' ? (
         <>
-          <div className="flex flex-wrap gap-2">
+          <div className={styles.actions}>
             <button
               type="button"
               onClick={() => agent.confirm(messageId)}
               disabled={state.busy}
-              className={cx('btn h-11 flex-[1_1_140px] font-semibold text-white', isCancel ? 'bg-danger' : 'bg-accent hover:bg-accent-dark')}
+              className={cx(
+                common.btnBase,
+                styles.confirmButton,
+                isCancel ? styles.confirmButtonDanger : styles.confirmButtonAccent,
+              )}
             >
               {isCancel ? 'Yes, cancel it' : isModify ? 'Confirm change' : 'Confirm booking'}
             </button>
@@ -58,18 +64,18 @@ export default function ConfirmCard({ messageId, request: c }: { messageId: stri
               type="button"
               onClick={() => agent.decline(messageId)}
               disabled={state.busy}
-              className="btn h-11 flex-[1_1_100px] border border-line2 bg-white text-[14px]"
+              className={cx(common.btnBase, styles.declineButton)}
             >
               {isCancel ? 'Keep it' : 'Change'}
             </button>
           </div>
-          <span className="text-xs text-muted">{isCancel ? 'This cannot be undone.' : 'Nothing is booked until you confirm.'}</span>
+          <span className={styles.helperText}>{isCancel ? 'This cannot be undone.' : 'Nothing is booked until you confirm.'}</span>
         </>
       ) : (
         <span
           className={cx(
-            'text-[13px] font-semibold',
-            c.state === 'done' ? 'text-ok-text' : c.state === 'failed' ? 'text-danger' : 'text-muted',
+            styles.statusText,
+            c.state === 'done' ? styles.statusDone : c.state === 'failed' ? styles.statusFailed : styles.statusNeutral,
           )}
         >
           {c.state === 'done' && isCancel ? 'Cancelled' : STATUS_TEXT[c.state]}

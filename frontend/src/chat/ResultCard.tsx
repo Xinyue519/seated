@@ -5,6 +5,7 @@ import { useAvailability } from '@/hooks/useAvailability';
 import { formatDay } from '@/lib/dates';
 import { cx, price } from '@/lib/format';
 import SlotButton from '@/components/SlotButton';
+import styles from './chat.module.css';
 
 interface Props {
   item: ResultItem;
@@ -19,41 +20,28 @@ export default function ResultCard({ item, index, date }: Props) {
   const saved = state.saved.includes(r.id);
 
   return (
-    <article
-      className={cx(
-        'flex flex-col gap-2.5 rounded-xl border p-3.5',
-        state.selectedId === r.id ? 'border-ink' : 'border-line',
-      )}
-    >
-      <div className="flex items-start gap-3">
-        <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-accent text-xs font-bold text-white">
-          {index + 1}
-        </span>
-        <div className="flex min-w-0 flex-1 flex-col gap-0.5">
-          <div className="flex justify-between gap-2">
-            <button
-              type="button"
-              onClick={() => store.set({ selectedId: r.id })}
-              className="text-left text-[15px] font-semibold hover:underline"
-            >
+    <article className={cx(styles.resultCard, state.selectedId === r.id ? styles.resultCardSelected : styles.resultCardDefault)}>
+      <div className={styles.resultHeader}>
+        <span className={styles.indexBadge}>{index + 1}</span>
+        <div className={styles.titleColumn}>
+          <div className={styles.nameRow}>
+            <button type="button" onClick={() => store.set({ selectedId: r.id })} className={styles.nameButton}>
               {r.name}
             </button>
-            <span className="text-muted">{price(r.priceLevel)}</span>
+            <span className={styles.priceText}>{price(r.priceLevel)}</span>
           </div>
-          <span className="text-[13px] text-muted">
+          <span className={styles.metaText}>
             {r.cuisine} · {r.neighborhood}
             {saved ? ' · Saved' : ''}
           </span>
         </div>
       </div>
-      <p className="text-[13px]">{r.description}</p>
-      {item.reasons.length > 0 && (
-        <span className="text-xs font-medium text-ok-text">{item.reasons.slice(0, 3).join(' · ')}</span>
-      )}
+      <p className={styles.description}>{r.description}</p>
+      {item.reasons.length > 0 && <span className={styles.reasonsText}>{item.reasons.slice(0, 3).join(' · ')}</span>}
       {slots === null ? (
-        <span className="text-[13px] text-muted">Checking times…</span>
+        <span className={styles.metaText}>Checking times…</span>
       ) : slots.length ? (
-        <div className="flex flex-wrap gap-1.5">
+        <div className={styles.slotsRow}>
           {slots.map((t) => (
             <SlotButton
               key={t}
@@ -66,7 +54,7 @@ export default function ResultCard({ item, index, date }: Props) {
           ))}
         </div>
       ) : (
-        <span className="text-[13px] font-medium text-danger">Fully booked {formatDay(date)}</span>
+        <span className={styles.fullyBookedText}>Fully booked {formatDay(date)}</span>
       )}
     </article>
   );

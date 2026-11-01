@@ -1,4 +1,5 @@
 import type { CSSProperties } from 'react';
+import styles from './map.module.css';
 
 /**
  * Stylized downtown Manhattan backdrop. Placeholder for Google Maps
@@ -9,7 +10,7 @@ export default function MapBackground({ style }: { style?: CSSProperties }) {
     <svg
       viewBox="0 0 1000 844"
       preserveAspectRatio="none"
-      className="absolute inset-0 h-full w-full transition-transform duration-300 ease-out"
+      className={styles.background}
       style={style}
       aria-hidden="true"
     >

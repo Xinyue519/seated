@@ -4,6 +4,9 @@ import { useApp } from '@/store/AppStore';
 import { config } from '@/config';
 import Logo from '@/components/Logo';
 import MapBackground from '@/map/MapBackground';
+import common from '@/styles/common.module.css';
+import styles from './pages.module.css';
+import { cx } from '@/lib/format';
 
 export default function LoginPage() {
   const { state, login } = useApp();
@@ -34,8 +37,8 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="flex min-h-screen flex-wrap bg-white">
-      <section aria-hidden="true" className="relative min-h-[320px] flex-[1_1_520px] overflow-hidden bg-map-land">
+    <div className={styles.loginRoot}>
+      <section aria-hidden="true" className={styles.loginMapSection}>
         <MapBackground />
         {[
           [34, 38],
@@ -44,40 +47,40 @@ export default function LoginPage() {
         ].map(([x, y]) => (
           <span
             key={`${x}-${y}`}
-            className="absolute h-[30px] w-[30px] -rotate-45 border-[3px] border-white bg-accent shadow-pin"
+            className={styles.loginMapPin}
             style={{ left: `${x}%`, top: `${y}%`, borderRadius: '50% 50% 50% 4px' }}
           />
         ))}
-        <div className="absolute bottom-10 left-10 right-10 flex max-w-[420px] flex-col gap-1.5 rounded-[14px] bg-white px-[22px] py-5 shadow-pop">
-          <span className="text-xl font-semibold tracking-[-0.01em]">Tell it what you're craving.</span>
-          <span className="text-muted">Seated finds the table and books it.</span>
+        <div className={styles.loginMapCaption}>
+          <span className={styles.loginMapCaptionTitle}>Tell it what you're craving.</span>
+          <span className={styles.loginMapCaptionSubtitle}>Seated finds the table and books it.</span>
         </div>
       </section>
 
-      <section className="flex flex-[1_1_480px] flex-col justify-center px-6 py-12">
-        <div className="mx-auto flex w-full max-w-[380px] flex-col gap-7">
+      <section className={styles.loginFormSection}>
+        <div className={styles.loginFormWrap}>
           <Logo large />
-          <div className="flex flex-col gap-1.5">
-            <h1 className="text-[28px] font-semibold tracking-[-0.02em]">Log in</h1>
-            <p className="text-muted">Welcome back. Your saved places and bookings are waiting.</p>
+          <div className={styles.loginHeading}>
+            <h1 className={styles.loginTitle}>Log in</h1>
+            <p className={styles.loginSubtitle}>Welcome back. Your saved places and bookings are waiting.</p>
           </div>
-          <form onSubmit={submit} className="flex flex-col gap-4">
-            <label className="flex flex-col gap-1.5">
-              <span className="text-[13px] font-medium">Email</span>
-              <input className="field" type="email" required value={email} onChange={(e) => setEmail(e.target.value)} />
+          <form onSubmit={submit} className={styles.loginForm}>
+            <label className={styles.loginFieldGroup}>
+              <span className={styles.loginFieldLabel}>Email</span>
+              <input className={common.field} type="email" required value={email} onChange={(e) => setEmail(e.target.value)} />
             </label>
-            <div className="flex flex-col gap-1.5">
-              <div className="flex items-baseline justify-between gap-2">
-                <label htmlFor="password" className="text-[13px] font-medium">
+            <div className={styles.loginFieldGroup}>
+              <div className={styles.loginPasswordRow}>
+                <label htmlFor="password" className={styles.loginFieldLabel}>
                   Password
                 </label>
-                <a href="#" className="text-[13px] text-accent hover:text-accent-dark">
+                <a href="#" className={styles.loginForgotLink}>
                   Forgot password?
                 </a>
               </div>
               <input
                 id="password"
-                className="field"
+                className={common.field}
                 type="password"
                 required
                 value={password}
@@ -85,15 +88,15 @@ export default function LoginPage() {
               />
             </div>
             {error && (
-              <p role="alert" className="text-[13px] font-medium text-danger">
+              <p role="alert" className={styles.loginError}>
                 {error}
               </p>
             )}
-            <button type="submit" disabled={submitting} className="btn-primary h-[46px]">
+            <button type="submit" disabled={submitting} className={cx(common.btnPrimary, styles.loginSubmitButton)}>
               {submitting ? 'Logging in…' : 'Log in'}
             </button>
           </form>
-          {config.useMocks && <p className="text-center text-[13px] text-muted">Mock mode: any email and password work.</p>}
+          {config.useMocks && <p className={styles.loginMockNote}>Mock mode: any email and password work.</p>}
         </div>
       </section>
     </div>

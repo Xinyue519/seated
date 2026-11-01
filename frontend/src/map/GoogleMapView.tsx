@@ -7,12 +7,13 @@ import { useApp } from '@/store/AppStore';
 import { MinusIcon, PlusIcon } from '@/components/icons';
 import RestaurantPopover from './RestaurantPopover';
 import type { MapViewProps, PinSpec } from './PlaceholderMapView';
+import styles from './map.module.css';
 
 const NYC_CENTER = { lat: 40.7285, lng: -73.9985 };
 
 export default function GoogleMapView(props: MapViewProps) {
   return (
-    <section aria-label="Map" className="relative min-h-[480px] min-w-0 flex-[999_1_560px] overflow-hidden bg-map-land">
+    <section aria-label="Map" className={styles.mapSection}>
       <APIProvider apiKey={config.googleMapsApiKey}>
         <Inner {...props} />
       </APIProvider>
@@ -88,7 +89,7 @@ function Inner({ pins, toolbar, slotDate, onPickSlot }: MapViewProps) {
       {toolbar && (
         <div
           data-no-pan="true"
-          className="pointer-events-none absolute left-4 right-4 top-4 z-[6] flex flex-wrap items-center gap-2"
+          className={styles.toolbarLayer}
           onClick={(e) => e.stopPropagation()}
         >
           {toolbar}
@@ -99,12 +100,12 @@ function Inner({ pins, toolbar, slotDate, onPickSlot }: MapViewProps) {
         <RestaurantPopover restaurant={selected} point={selectedPoint} date={slotDate} onPickSlot={onPickSlot} />
       )}
 
-      <div data-no-pan="true" className="absolute bottom-4 right-4 z-[7] flex flex-col overflow-hidden rounded-[10px] bg-white shadow-float">
-        <button type="button" aria-label="Zoom in" onClick={() => zoomBy(1)} className="flex h-11 w-11 items-center justify-center text-ink">
+      <div data-no-pan="true" className={styles.zoomControls}>
+        <button type="button" aria-label="Zoom in" onClick={() => zoomBy(1)} className={styles.zoomButton}>
           <PlusIcon />
         </button>
-        <span className="h-px bg-line" />
-        <button type="button" aria-label="Zoom out" onClick={() => zoomBy(-1)} className="flex h-11 w-11 items-center justify-center text-ink">
+        <span className={styles.zoomDivider} />
+        <button type="button" aria-label="Zoom out" onClick={() => zoomBy(-1)} className={styles.zoomButton}>
           <MinusIcon />
         </button>
       </div>
@@ -138,7 +139,7 @@ function PinGlyph({ pin, selected, saved }: { pin: PinSpec; selected: boolean; s
     return (
       <div style={{ paddingBottom: Math.round(size * 0.22) }}>
         <div
-          className="flex items-center justify-center border-[3px] border-white bg-accent shadow-pin"
+          className={styles.glyphResult}
           style={{
             width: size,
             height: size,
@@ -147,7 +148,7 @@ function PinGlyph({ pin, selected, saved }: { pin: PinSpec; selected: boolean; s
             boxShadow: selected ? '0 0 0 6px rgba(194,62,34,0.22), 0 4px 10px rgba(23,25,30,0.25)' : undefined,
           }}
         >
-          <span className="rotate-45 text-[13px] font-bold text-white">{pin.label}</span>
+          <span className={styles.pinResultLabel}>{pin.label}</span>
         </div>
       </div>
     );
@@ -157,14 +158,14 @@ function PinGlyph({ pin, selected, saved }: { pin: PinSpec; selected: boolean; s
     const size = selected ? 36 : 28;
     return (
       <div
-        className="flex items-center justify-center rounded-full border-[3px] border-white bg-ink shadow-pin"
+        className={styles.glyphSaved}
         style={{
           width: size,
           height: size,
           boxShadow: selected ? '0 0 0 6px rgba(23,25,30,0.18), 0 4px 10px rgba(23,25,30,0.25)' : undefined,
         }}
       >
-        <span className="h-2 w-2 rounded-full bg-white" />
+        <span className={styles.pinSavedDot} />
       </div>
     );
   }
@@ -173,7 +174,7 @@ function PinGlyph({ pin, selected, saved }: { pin: PinSpec; selected: boolean; s
   const size = selected ? 22 : dim ? 14 : 18;
   return (
     <div
-      className="rounded-full border-2 border-white shadow-[0_2px_6px_rgba(23,25,30,0.2)]"
+      className={styles.glyphDefault}
       style={{ width: size, height: size, background: dim ? '#B0ACA2' : saved ? '#17191E' : '#C23E22' }}
     />
   );

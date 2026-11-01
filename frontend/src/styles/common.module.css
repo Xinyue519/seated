@@ -1,0 +1,46 @@
+/*
+ * Shared primitives used across folders (buttons, pills, inputs, cards).
+ * Mirrors what used to live in index.css's `@layer components` — migrated
+ * here so every folder's own *.module.css can `composes: ... from` these
+ * instead of relying on global class-name strings.
+ */
+
+.btnBase {
+  @apply inline-flex items-center justify-center gap-2 rounded-[10px] font-medium transition-colors disabled:opacity-50;
+}
+.btnPrimary {
+  composes: btnBase;
+  @apply h-11 bg-ink px-[18px] font-semibold text-white hover:bg-black;
+}
+.btnAccent {
+  composes: btnBase;
+  @apply h-11 bg-accent px-[18px] font-semibold text-white hover:bg-accent-dark;
+}
+.btnOutline {
+  composes: btnBase;
+  @apply h-10 border border-line2 bg-white px-3.5 text-[13px] text-ink hover:bg-panel;
+}
+
+.pillBase {
+  @apply inline-flex min-h-[34px] items-center rounded-full border px-3 text-[13px] font-medium transition-colors;
+}
+.pillOn {
+  composes: pillBase;
+  @apply border-ink bg-ink text-white;
+}
+.pillOff {
+  composes: pillBase;
+  @apply border-line2 bg-white text-ink hover:bg-panel;
+}
+
+.field {
+  @apply h-11 rounded-[10px] border border-line2 bg-white px-3 text-[14px] text-ink outline-none focus:border-ink;
+}
+
+.card {
+  @apply rounded-[14px] border border-line bg-white;
+}
+
+.eyebrow {
+  @apply text-[13px] font-semibold uppercase tracking-[0.04em] text-muted;
+}

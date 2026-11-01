@@ -1,0 +1,351 @@
+/* Shared module for everything under src/pages/. Mechanical translation of the
+   previous inline Tailwind utility strings into named classes — values are
+   unchanged, only given names. Cross-folder primitives (buttons, pills,
+   fields, cards) live in ../styles/common.module.css and are imported
+   directly in each page rather than duplicated here. */
+
+/* ---------- ExplorePage ---------- */
+.exploreMain {
+  @apply flex min-h-0 flex-1 flex-wrap md:flex-nowrap;
+}
+.exploreToolbar {
+  @apply pointer-events-auto flex min-h-8 items-center gap-2.5 rounded-full bg-white py-1.5 pl-3.5 pr-1.5 shadow-float;
+}
+.exploreToolbarDot {
+  @apply h-2 w-2 rounded-full bg-accent;
+}
+.exploreToolbarLabel {
+  @apply font-medium;
+}
+.exploreShowAllButton {
+  @apply h-8 rounded-full border border-line bg-white px-3 text-[13px] font-medium;
+}
+
+/* ---------- LoginPage ---------- */
+.loginRoot {
+  @apply flex min-h-screen flex-wrap bg-white;
+}
+.loginMapSection {
+  @apply relative min-h-[320px] flex-[1_1_520px] overflow-hidden bg-map-land;
+}
+.loginMapPin {
+  @apply absolute h-[30px] w-[30px] -rotate-45 border-[3px] border-white bg-accent shadow-pin;
+}
+.loginMapCaption {
+  @apply absolute bottom-10 left-10 right-10 flex max-w-[420px] flex-col gap-1.5 rounded-[14px] bg-white px-[22px] py-5 shadow-pop;
+}
+.loginMapCaptionTitle {
+  @apply text-xl font-semibold tracking-[-0.01em];
+}
+.loginMapCaptionSubtitle {
+  @apply text-muted;
+}
+.loginFormSection {
+  @apply flex flex-[1_1_480px] flex-col justify-center px-6 py-12;
+}
+.loginFormWrap {
+  @apply mx-auto flex w-full max-w-[380px] flex-col gap-7;
+}
+.loginHeading {
+  @apply flex flex-col gap-1.5;
+}
+.loginTitle {
+  @apply text-[28px] font-semibold tracking-[-0.02em];
+}
+.loginSubtitle {
+  @apply text-muted;
+}
+.loginForm {
+  @apply flex flex-col gap-4;
+}
+.loginFieldGroup {
+  @apply flex flex-col gap-1.5;
+}
+.loginFieldLabel {
+  @apply text-[13px] font-medium;
+}
+.loginPasswordRow {
+  @apply flex items-baseline justify-between gap-2;
+}
+.loginForgotLink {
+  @apply text-[13px] text-accent hover:text-accent-dark;
+}
+.loginError {
+  @apply text-[13px] font-medium text-danger;
+}
+.loginSubmitButton {
+  @apply h-[46px];
+}
+.loginMockNote {
+  @apply text-center text-[13px] text-muted;
+}
+
+/* ---------- ReservationsPage ---------- */
+.reservationsMain {
+  @apply mx-auto flex w-full max-w-[880px] flex-1 flex-col gap-8 overflow-y-auto px-6 pb-16 pt-10;
+}
+.reservationsHeader {
+  @apply flex flex-wrap items-center justify-between gap-4;
+}
+.reservationsTitle {
+  @apply text-[28px] font-semibold tracking-[-0.02em];
+}
+.reservationsBookButton {
+  @apply h-10 px-3.5 font-medium;
+}
+.reservationsSection {
+  @apply flex flex-col gap-3;
+}
+.reservationsEmptyCard {
+  @apply p-5 text-muted;
+}
+.reservationCard {
+  @apply flex flex-wrap items-center gap-5 p-5;
+}
+.reservationCardCancelled {
+  @apply opacity-60;
+}
+.reservationDateBlock {
+  @apply flex w-[76px] shrink-0 flex-col items-center justify-center rounded-[10px] py-2.5;
+}
+.reservationDateBlockNext {
+  @apply bg-accent-soft text-accent-dark;
+}
+.reservationDateBlockDefault {
+  @apply bg-chip;
+}
+.reservationDateMonth {
+  @apply text-xs font-semibold tracking-[0.06em];
+}
+.reservationDateDay {
+  @apply text-[28px] font-bold leading-tight;
+}
+.reservationDateWeekday {
+  @apply text-xs font-medium;
+}
+.reservationInfo {
+  @apply flex min-w-0 flex-[1_1_280px] flex-col gap-1.5;
+}
+.reservationNameRow {
+  @apply flex flex-wrap items-center gap-2.5;
+}
+.reservationName {
+  @apply text-lg font-semibold;
+}
+.reservationStatusBadge {
+  @apply rounded-md px-2 py-0.5 text-xs font-semibold;
+}
+.reservationStatusCancelled {
+  @apply bg-chip text-muted;
+}
+.reservationStatusConfirmed {
+  @apply bg-ok-soft text-ok-text;
+}
+.reservationDetail {
+  @apply text-muted;
+}
+.reservationBookedBy {
+  @apply text-[13px] text-muted;
+}
+.reservationActions {
+  @apply flex flex-wrap items-center gap-2;
+}
+.reservationCancelButton {
+  @apply text-danger;
+}
+.reservationConfirmText {
+  @apply text-[13px] font-medium;
+}
+.reservationDangerButton {
+  @apply h-10 bg-danger px-3.5 text-[13px] font-semibold text-white;
+}
+.reservationsPastCard {
+  @apply overflow-hidden;
+}
+.reservationPastRow {
+  @apply flex flex-wrap items-center gap-4 border-b border-divider px-5 py-4 last:border-b-0;
+}
+.reservationPastInfo {
+  @apply flex min-w-0 flex-[1_1_260px] flex-col gap-0.5;
+}
+.reservationPastName {
+  @apply font-semibold;
+}
+.reservationPastLabel {
+  @apply text-[13px] text-muted;
+}
+.reservationThumbButton {
+  @apply flex h-10 w-10 items-center justify-center rounded-[10px] border;
+}
+.reservationThumbButtonActive {
+  @apply border-ink bg-ink text-white;
+}
+.reservationThumbButtonInactive {
+  @apply border-line2 bg-white;
+}
+
+/* ---------- SavedPage ---------- */
+.savedMain {
+  @apply flex min-h-0 flex-1 flex-wrap;
+}
+.savedToolbar {
+  @apply pointer-events-auto flex min-h-8 items-center gap-2.5 rounded-full bg-white px-3.5 py-1.5 shadow-float;
+}
+.savedToolbarDot {
+  @apply h-2 w-2 rounded-full bg-ink;
+}
+.savedToolbarLabel {
+  @apply font-medium;
+}
+.savedAside {
+  @apply flex min-h-[480px] max-w-full flex-[1_1_400px] flex-col border-l border-line bg-white md:min-h-0;
+}
+.savedHeader {
+  @apply flex flex-col gap-3.5 border-b border-line p-4;
+}
+.savedTitle {
+  @apply text-xl font-semibold tracking-[-0.01em];
+}
+.savedTabs {
+  @apply flex flex-wrap gap-1.5;
+}
+.savedList {
+  @apply flex min-h-0 flex-1 flex-col overflow-y-auto;
+}
+.savedEmpty {
+  @apply px-4 py-5 text-muted;
+}
+.savedItem {
+  @apply flex items-center gap-3 border-b border-divider px-4 py-3;
+}
+.savedItemSelected {
+  @apply bg-panel;
+}
+.savedItemPhoto {
+  @apply h-[52px] w-[52px] shrink-0 overflow-hidden rounded-[10px] bg-photo;
+}
+.savedItemPhotoImg {
+  @apply h-full w-full object-cover;
+}
+.savedItemInfo {
+  @apply flex min-w-0 flex-1 flex-col gap-0.5;
+}
+.savedItemNameRow {
+  @apply flex justify-between gap-2;
+}
+.savedItemName {
+  @apply text-left font-semibold hover:underline;
+}
+.savedItemPrice {
+  @apply text-muted;
+}
+.savedItemDetail {
+  @apply text-[13px] text-muted;
+}
+.savedItemBadges {
+  @apply mt-1 flex flex-wrap gap-1.5;
+}
+.savedBadge {
+  @apply rounded-md px-2 py-0.5 text-xs;
+}
+.savedBadgeVisited {
+  @apply bg-ok-soft font-medium text-ok-text;
+}
+.savedBadgeTry {
+  @apply bg-chip;
+}
+.savedRemoveButton {
+  @apply flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-line bg-white;
+}
+.savedFooter {
+  @apply flex flex-col gap-2 border-t border-line px-4 pb-4 pt-3.5;
+}
+.savedFooterLabel {
+  @apply text-xs text-muted;
+}
+.savedFooterButtons {
+  @apply flex flex-wrap gap-1.5;
+}
+.savedFooterPill {
+  @apply font-normal;
+}
+
+/* ---------- SettingsPage ---------- */
+.settingsMain {
+  @apply mx-auto flex w-full max-w-[880px] flex-1 flex-col gap-5 overflow-y-auto px-6 pb-16 pt-10;
+}
+.settingsTitle {
+  @apply text-[28px] font-semibold tracking-[-0.02em];
+}
+.settingsProfileSection {
+  @apply flex flex-col gap-5 p-6;
+}
+.settingsDiningSection {
+  @apply flex flex-col gap-6 p-6;
+}
+.settingsSecuritySection {
+  @apply flex flex-col gap-4 p-6;
+}
+.settingsSectionHeading {
+  @apply text-[17px] font-semibold;
+}
+.settingsProfileGrid {
+  @apply grid gap-4 [grid-template-columns:repeat(auto-fit,minmax(min(240px,100%),1fr))];
+}
+.settingsFieldGroup {
+  @apply flex flex-col gap-1.5;
+}
+.settingsFieldLabel {
+  @apply text-[13px] font-medium;
+}
+.settingsHelperText {
+  @apply text-[13px] text-muted;
+}
+.settingsDiningHeading {
+  @apply flex flex-col gap-1;
+}
+.settingsDiningSubtitle {
+  @apply text-muted;
+}
+.settingsLegend {
+  @apply mb-2.5 text-[13px] font-medium;
+}
+.settingsPillRow {
+  @apply flex flex-wrap gap-2;
+}
+.settingsPriceOption {
+  @apply min-w-16 justify-center;
+}
+.settingsDietaryGrid {
+  @apply grid gap-2 [grid-template-columns:repeat(auto-fit,minmax(min(160px,100%),1fr))];
+}
+.settingsDietaryOption {
+  @apply flex min-h-11 items-center gap-2.5 rounded-[10px] border border-line px-3;
+}
+.settingsCheckbox {
+  @apply h-4 w-4 accent-ink;
+}
+.settingsPartySizeGroup {
+  @apply flex flex-col gap-2;
+}
+.settingsPartySizeRow {
+  @apply flex items-center gap-2;
+}
+.settingsStepperButton {
+  @apply h-11 w-11 rounded-[10px] border border-line2 bg-white text-lg font-medium;
+}
+.settingsPartySizeValue {
+  @apply min-w-20 text-center font-medium;
+}
+.settingsSecurityRow {
+  @apply flex flex-wrap items-center justify-between gap-3;
+}
+.settingsSignedInAs {
+  @apply text-muted;
+}
+.settingsLogoutButton {
+  @apply text-[14px] text-danger;
+}
+.settingsSaveRow {
+  @apply flex justify-end;
+}

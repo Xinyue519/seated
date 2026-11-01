@@ -3,9 +3,11 @@ import type { Restaurant } from '@/types';
 import { findRestaurant, NEIGHBORHOODS } from '@/data/restaurants';
 import { project, type Point } from '@/lib/geo';
 import { useApp } from '@/store/AppStore';
+import { cx } from '@/lib/format';
 import { MinusIcon, PlusIcon } from '@/components/icons';
 import MapBackground from './MapBackground';
 import RestaurantPopover from './RestaurantPopover';
+import styles from './map.module.css';
 
 export type PinVariant = 'result' | 'saved' | 'default' | 'dim';
 
@@ -88,7 +90,7 @@ export default function PlaceholderMapView({ pins, toolbar, slotDate, onPickSlot
   return (
     <section
       aria-label="Map"
-      className={`relative min-h-[480px] min-w-0 flex-[999_1_560px] overflow-hidden bg-map-land ${panning ? 'cursor-grabbing select-none' : 'cursor-grab'}`}
+      className={cx(styles.mapSection, panning ? styles.panning : styles.idle)}
       style={{ touchAction: 'none' }}
       onClick={handleBackgroundClick}
       onPointerDown={handlePointerDown}
@@ -104,7 +106,7 @@ export default function PlaceholderMapView({ pins, toolbar, slotDate, onPickSlot
       />
       <span
         aria-hidden="true"
-        className="pointer-events-none absolute left-[1.5%] top-1/2 origin-top-left -rotate-90 text-xs tracking-[3px] text-map-river"
+        className={styles.riverLabel}
       >
         HUDSON RIVER
       </span>
@@ -116,7 +118,7 @@ export default function PlaceholderMapView({ pins, toolbar, slotDate, onPickSlot
           <span
             key={name}
             aria-hidden="true"
-            className="pointer-events-none absolute -translate-x-1/2 -translate-y-1/2 whitespace-nowrap text-[11px] font-semibold tracking-[2px] text-map-label"
+            className={styles.neighborhoodLabel}
             style={{ left: `${p.x}%`, top: `${p.y}%` }}
           >
             {name.toUpperCase()}
@@ -127,7 +129,7 @@ export default function PlaceholderMapView({ pins, toolbar, slotDate, onPickSlot
       {toolbar && (
         <div
           data-no-pan="true"
-          className="pointer-events-none absolute left-4 right-4 top-4 z-[6] flex flex-wrap items-center gap-2"
+          className={styles.toolbarLayer}
           onClick={(e) => e.stopPropagation()}
         >
           {toolbar}
@@ -154,7 +156,7 @@ export default function PlaceholderMapView({ pins, toolbar, slotDate, onPickSlot
 
       <div
         data-no-pan="true"
-        className="absolute bottom-4 right-4 z-[7] flex flex-col overflow-hidden rounded-[10px] bg-white shadow-float"
+        className={styles.zoomControls}
         onClick={(e) => e.stopPropagation()}
       >
         <button
@@ -162,17 +164,17 @@ export default function PlaceholderMapView({ pins, toolbar, slotDate, onPickSlot
           aria-label="Zoom in"
           onClick={zoomIn}
           disabled={zoom >= MAX_ZOOM}
-          className="flex h-11 w-11 items-center justify-center text-ink disabled:text-[#B9B5AB]"
+          className={styles.zoomButton}
         >
           <PlusIcon />
         </button>
-        <span className="h-px bg-line" />
+        <span className={styles.zoomDivider} />
         <button
           type="button"
           aria-label="Zoom out"
           onClick={zoomOut}
           disabled={zoom <= MIN_ZOOM}
-          className="flex h-11 w-11 items-center justify-center text-ink disabled:text-[#B9B5AB]"
+          className={styles.zoomButton}
         >
           <MinusIcon />
         </button>
@@ -197,7 +199,7 @@ function Pin({ pin, point, selected, onSelect }: { pin: PinSpec; point: Point; s
         aria-label={pin.restaurant.name}
         title={pin.restaurant.name}
         onClick={click}
-        className="absolute flex items-center justify-center border-[3px] border-white bg-accent p-0 shadow-pin"
+        className={styles.pinResult}
         style={{
           ...pos,
           width: size,
@@ -209,7 +211,7 @@ function Pin({ pin, point, selected, onSelect }: { pin: PinSpec; point: Point; s
           boxShadow: selected ? '0 0 0 6px rgba(194,62,34,0.22), 0 4px 10px rgba(23,25,30,0.25)' : undefined,
         }}
       >
-        <span className="rotate-45 text-[13px] font-bold text-white">{pin.label}</span>
+        <span className={styles.pinResultLabel}>{pin.label}</span>
       </button>
     );
   }
@@ -222,7 +224,7 @@ function Pin({ pin, point, selected, onSelect }: { pin: PinSpec; point: Point; s
         aria-label={pin.restaurant.name}
         title={pin.restaurant.name}
         onClick={click}
-        className="absolute flex items-center justify-center rounded-full border-[3px] border-white bg-ink p-0 shadow-pin"
+        className={styles.pinSaved}
         style={{
           ...pos,
           width: size,
@@ -232,7 +234,7 @@ function Pin({ pin, point, selected, onSelect }: { pin: PinSpec; point: Point; s
           boxShadow: selected ? '0 0 0 6px rgba(23,25,30,0.18), 0 4px 10px rgba(23,25,30,0.25)' : undefined,
         }}
       >
-        <span className="h-2 w-2 rounded-full bg-white" />
+        <span className={styles.pinSavedDot} />
       </button>
     );
   }
@@ -246,7 +248,7 @@ function Pin({ pin, point, selected, onSelect }: { pin: PinSpec; point: Point; s
       aria-label={pin.restaurant.name}
       title={pin.restaurant.name}
       onClick={click}
-      className="absolute rounded-full border-2 border-white p-0 shadow-[0_2px_6px_rgba(23,25,30,0.2)]"
+      className={styles.pinDefault}
       style={{ ...pos, width: size, height: size, margin: `-${size / 2}px 0 0 -${size / 2}px`, background: color, zIndex: selected ? 5 : 2 }}
     />
   );

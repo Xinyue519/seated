@@ -3,6 +3,8 @@ import type { ChatMessage } from '@/types';
 import { todayISO } from '@/lib/dates';
 import { cx } from '@/lib/format';
 import { CheckIcon } from '@/components/icons';
+import common from '@/styles/common.module.css';
+import styles from './chat.module.css';
 import ResultCard from './ResultCard';
 import ConfirmCard from './ConfirmCard';
 
@@ -15,43 +17,29 @@ export default function MessageItem({ message: m, onOpenTrace }: Props) {
   const navigate = useNavigate();
 
   if (m.role === 'user') {
-    return (
-      <div className="max-w-[85%] self-end whitespace-pre-line rounded-[14px_14px_4px_14px] bg-ink px-3.5 py-2.5 text-white">
-        {m.text}
-      </div>
-    );
+    return <div className={styles.userBubble}>{m.text}</div>;
   }
 
   return (
-    <div className="flex flex-col gap-2.5">
+    <div className={styles.agentMessage}>
       {m.chips && m.chips.length > 0 && (
-        <div className="flex flex-wrap gap-1.5">
+        <div className={styles.chipRow}>
           {m.chips.map((c, i) => (
-            <span
-              key={i}
-              className={cx(
-                'rounded-md px-2 py-1 text-xs font-medium',
-                c.missing ? 'border border-dashed border-[#B9B5AB] text-muted' : 'bg-chip',
-              )}
-            >
+            <span key={i} className={cx(styles.chip, c.missing ? styles.chipMissing : styles.chipFilled)}>
               {c.label}
             </span>
           ))}
         </div>
       )}
       {m.toolsSummary && (
-        <button
-          type="button"
-          onClick={onOpenTrace}
-          className="flex min-h-8 items-center gap-2 self-start rounded-lg border border-line bg-white px-2.5 text-left font-mono text-xs text-muted hover:border-line2"
-        >
-          <CheckIcon size={12} className={m.toolsTone === 'warn' ? 'text-warn-icon' : 'text-ok'} />
+        <button type="button" onClick={onOpenTrace} className={styles.toolsSummaryButton}>
+          <CheckIcon size={12} className={m.toolsTone === 'warn' ? styles.toolsIconWarn : styles.toolsIconOk} />
           {m.toolsSummary}
         </button>
       )}
-      {m.text && <p className="whitespace-pre-line">{m.text}</p>}
+      {m.text && <p className={styles.messageText}>{m.text}</p>}
       {m.results && m.results.length > 0 && (
-        <div className="flex flex-col gap-2.5">
+        <div className={styles.resultsList}>
           {m.results.map((item, i) => (
             <ResultCard key={item.restaurantId} item={item} index={i} date={m.resultsDate ?? todayISO()} />
           ))}
@@ -59,7 +47,11 @@ export default function MessageItem({ message: m, onOpenTrace }: Props) {
       )}
       {m.confirm && <ConfirmCard messageId={m.id} request={m.confirm} />}
       {m.action === 'reservations' && (
-        <button type="button" onClick={() => navigate('/reservations')} className="btn-outline h-[38px] self-start">
+        <button
+          type="button"
+          onClick={() => navigate('/reservations')}
+          className={cx(common.btnOutline, styles.viewReservationsButton)}
+        >
           View reservations
         </button>
       )}

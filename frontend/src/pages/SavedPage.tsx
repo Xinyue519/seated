@@ -8,6 +8,8 @@ import { resolveDay } from '@/lib/dates';
 import { cx, price } from '@/lib/format';
 import { BookmarkIcon } from '@/components/icons';
 import MapView, { type PinSpec } from '@/map/MapView';
+import common from '@/styles/common.module.css';
+import styles from './pages.module.css';
 
 type Collection = 'all' | 'been' | 'try' | 'italian';
 
@@ -42,7 +44,7 @@ export default function SavedPage() {
   };
 
   return (
-    <main className="flex min-h-0 flex-1 flex-wrap">
+    <main className={styles.savedMain}>
       <MapView
         pins={pins}
         slotDate={resolveDay(state.context.day)}
@@ -51,17 +53,17 @@ export default function SavedPage() {
           void agent.pickSlot(id, time, date);
         }}
         toolbar={
-          <div className="pointer-events-auto flex min-h-8 items-center gap-2.5 rounded-full bg-white px-3.5 py-1.5 shadow-float">
-            <span className="h-2 w-2 rounded-full bg-ink" />
-            <span className="font-medium">{items.length} saved places</span>
+          <div className={styles.savedToolbar}>
+            <span className={styles.savedToolbarDot} />
+            <span className={styles.savedToolbarLabel}>{items.length} saved places</span>
           </div>
         }
       />
 
-      <aside aria-label="Saved places" className="flex min-h-[480px] max-w-full flex-[1_1_400px] flex-col border-l border-line bg-white md:min-h-0">
-        <div className="flex flex-col gap-3.5 border-b border-line p-4">
-          <h1 className="text-xl font-semibold tracking-[-0.01em]">Saved</h1>
-          <div role="tablist" aria-label="Collections" className="flex flex-wrap gap-1.5">
+      <aside aria-label="Saved places" className={styles.savedAside}>
+        <div className={styles.savedHeader}>
+          <h1 className={styles.savedTitle}>Saved</h1>
+          <div role="tablist" aria-label="Collections" className={styles.savedTabs}>
             {COLLECTIONS.map((c) => (
               <button
                 key={c.id}
@@ -72,7 +74,7 @@ export default function SavedPage() {
                   setCollection(c.id);
                   store.set({ selectedId: null });
                 }}
-                className={collection === c.id ? 'pill-on' : 'pill-off'}
+                className={collection === c.id ? common.pillOn : common.pillOff}
               >
                 {c.label} · {saved.filter((r) => inCollection(r, c.id)).length}
               </button>
@@ -80,32 +82,29 @@ export default function SavedPage() {
           </div>
         </div>
 
-        <div className="flex min-h-0 flex-1 flex-col overflow-y-auto">
+        <div className={styles.savedList}>
           {items.length === 0 && (
-            <p className="px-4 py-5 text-muted">Nothing here yet. Tap the bookmark on any restaurant card to save it.</p>
+            <p className={styles.savedEmpty}>Nothing here yet. Tap the bookmark on any restaurant card to save it.</p>
           )}
           {items.map((r) => {
             const been = state.visited.includes(r.id);
             return (
-              <article
-                key={r.id}
-                className={cx('flex items-center gap-3 border-b border-divider px-4 py-3', state.selectedId === r.id && 'bg-panel')}
-              >
-                <div className="h-[52px] w-[52px] shrink-0 overflow-hidden rounded-[10px] bg-photo">
-                  {r.imageUrl && <img src={r.imageUrl} alt={r.name} className="h-full w-full object-cover" />}
+              <article key={r.id} className={cx(styles.savedItem, state.selectedId === r.id && styles.savedItemSelected)}>
+                <div className={styles.savedItemPhoto}>
+                  {r.imageUrl && <img src={r.imageUrl} alt={r.name} className={styles.savedItemPhotoImg} />}
                 </div>
-                <div className="flex min-w-0 flex-1 flex-col gap-0.5">
-                  <div className="flex justify-between gap-2">
-                    <button type="button" onClick={() => store.set({ selectedId: r.id })} className="text-left font-semibold hover:underline">
+                <div className={styles.savedItemInfo}>
+                  <div className={styles.savedItemNameRow}>
+                    <button type="button" onClick={() => store.set({ selectedId: r.id })} className={styles.savedItemName}>
                       {r.name}
                     </button>
-                    <span className="text-muted">{price(r.priceLevel)}</span>
+                    <span className={styles.savedItemPrice}>{price(r.priceLevel)}</span>
                   </div>
-                  <span className="text-[13px] text-muted">
+                  <span className={styles.savedItemDetail}>
                     {r.cuisine} · {r.neighborhood}
                   </span>
-                  <div className="mt-1 flex flex-wrap gap-1.5">
-                    <span className={cx('rounded-md px-2 py-0.5 text-xs', been ? 'bg-ok-soft font-medium text-ok-text' : 'bg-chip')}>
+                  <div className={styles.savedItemBadges}>
+                    <span className={cx(styles.savedBadge, been ? styles.savedBadgeVisited : styles.savedBadgeTry)}>
                       {been ? 'Visited' : 'Want to try'}
                     </span>
                   </div>
@@ -114,7 +113,7 @@ export default function SavedPage() {
                   type="button"
                   aria-label={`Remove ${r.name} from saved`}
                   onClick={() => unsave(r)}
-                  className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-line bg-white"
+                  className={styles.savedRemoveButton}
                 >
                   <BookmarkIcon filled />
                 </button>
@@ -123,13 +122,21 @@ export default function SavedPage() {
           })}
         </div>
 
-        <div className="flex flex-col gap-2 border-t border-line px-4 pb-4 pt-3.5">
-          <span className="text-xs text-muted">Ask Seated about your saved places</span>
-          <div className="flex flex-wrap gap-1.5">
-            <button type="button" onClick={() => ask("Find somewhere similar to my saved places that I haven't been to")} className="pill-off font-normal">
+        <div className={styles.savedFooter}>
+          <span className={styles.savedFooterLabel}>Ask Seated about your saved places</span>
+          <div className={styles.savedFooterButtons}>
+            <button
+              type="button"
+              onClick={() => ask("Find somewhere similar to my saved places that I haven't been to")}
+              className={cx(common.pillOff, styles.savedFooterPill)}
+            >
               Find similar I haven't tried
             </button>
-            <button type="button" onClick={() => ask('Book one from my saved list for Saturday')} className="pill-off font-normal">
+            <button
+              type="button"
+              onClick={() => ask('Book one from my saved list for Saturday')}
+              className={cx(common.pillOff, styles.savedFooterPill)}
+            >
               Book one of these for Saturday
             </button>
           </div>

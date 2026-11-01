@@ -2,6 +2,7 @@ import { useState, type FormEvent } from 'react';
 import { useApp } from '@/store/AppStore';
 import { SendIcon } from '@/components/icons';
 import { getSuggestions } from './suggestions';
+import styles from './chat.module.css';
 
 export default function Composer({ onSent }: { onSent?: () => void }) {
   const { state, agent } = useApp();
@@ -20,22 +21,22 @@ export default function Composer({ onSent }: { onSent?: () => void }) {
   };
 
   return (
-    <form onSubmit={submit} className="flex flex-col gap-2 border-t border-line px-4 pb-4 pt-3">
-      <div className="flex flex-wrap gap-1.5">
+    <form onSubmit={submit} className={styles.form}>
+      <div className={styles.suggestions}>
         {getSuggestions(state).map((label) => (
           <button
             key={label}
             type="button"
             onClick={() => send(label)}
             disabled={state.busy}
-            className="min-h-8 rounded-full border border-line bg-white px-3 py-1 text-left text-[13px] hover:border-line2"
+            className={styles.suggestionButton}
           >
             {label}
           </button>
         ))}
       </div>
-      <div className="flex items-center gap-2 rounded-xl border border-line2 py-1.5 pl-3.5 pr-1.5 focus-within:border-ink">
-        <label htmlFor="ask-seated" className="sr-only">
+      <div className={styles.inputRow}>
+        <label htmlFor="ask-seated" className={styles.srOnly}>
           Ask Seated
         </label>
         <input
@@ -44,14 +45,9 @@ export default function Composer({ onSent }: { onSent?: () => void }) {
           value={draft}
           onChange={(e) => setDraft(e.target.value)}
           placeholder="Ask for a table, change or cancel a booking…"
-          className="h-8 min-w-0 flex-1 bg-transparent outline-none"
+          className={styles.input}
         />
-        <button
-          type="submit"
-          aria-label="Send"
-          disabled={state.busy || !draft.trim()}
-          className="flex h-9 w-9 items-center justify-center rounded-[9px] bg-ink text-white disabled:opacity-40"
-        >
+        <button type="submit" aria-label="Send" disabled={state.busy || !draft.trim()} className={styles.sendButton}>
           <SendIcon />
         </button>
       </div>
