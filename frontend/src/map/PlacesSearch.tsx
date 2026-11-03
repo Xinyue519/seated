@@ -1,34 +1,35 @@
 import { useEffect, useRef, useState } from 'react';
 import { useMapsLibrary } from '@vis.gl/react-google-maps';
-import { allRestaurants } from '@/data/restaurants';
 import { useApp } from '@/store/AppStore';
 import { SearchIcon, CloseIcon } from '@/components/icons';
 import styles from './map.module.css';
+import { PRICE_MAP, CUISINE_MAP, NYC_CENTER, type Restaurant } from '@/types';
 
-const NYC_CENTER = { lat: 40.735, lng: -73.995 };
+function placeToRestaurant(place: google.maps.places.Place): Restaurant {
+  const cuisineType = place.types?.find((t) => t in CUISINE_MAP);
+  const group = cuisineType ? CUISINE_MAP[cuisineType] : 'unknown';
+  const neighborhood =
+    place.addressComponents?.find((c) => c.types.includes('neighborhood'))?.longText ?? 'New York';
 
-function normalize(s: string): string {
-  return s.toLowerCase().replace(/[^a-z0-9]/g, '');
+  return {
+    id: place.id,
+    name: place.displayName ?? 'Unknown',
+    cuisine: group,
+    group,
+    neighborhood,
+    priceLevel: place.priceLevel ? PRICE_MAP[place.priceLevel] ?? 2 : 2,
+    lat: place.location?.lat() ?? 0,
+    lng: place.location?.lng() ?? 0,
+    tags: [],
+    description: place.editorialSummary ?? '',
+    website: place.websiteURI ?? undefined,
+    imageUrl: place.photos?.[0]?.getURI({ maxWidth: 800 }),
+  };
 }
 
-/** Loose match against our curated 21 — Google doesn't know which restaurants we book. */
-function matchRestaurant(name: string) {
-  const n = normalize(name);
-  if (!n) return undefined;
-  return allRestaurants().find((r) => {
-    const rn = normalize(r.name);
-    return rn === n || rn.includes(n) || n.includes(rn);
-  });
-}
-
-/**
- * Google-powered restaurant search (Places Autocomplete, New API). Renders nothing
- * when the Places library isn't available — i.e. no Google Maps key configured, or
- * the map fell back to the drawn placeholder.
- */
 export default function PlacesSearch() {
   const placesLib = useMapsLibrary('places');
-  const { store, toast } = useApp();
+  const { state, store, toast, api, refreshRestaurants } = useApp();
   const [query, setQuery] = useState('');
   const [suggestions, setSuggestions] = useState<google.maps.places.AutocompleteSuggestion[]>([]);
   const [open, setOpen] = useState(false);
@@ -45,7 +46,7 @@ export default function PlacesSearch() {
       if (!sessionToken.current) sessionToken.current = new placesLib.AutocompleteSessionToken();
       placesLib.AutocompleteSuggestion.fetchAutocompleteSuggestions({
         input: query,
-        includedPrimaryTypes: ['restaurant'],
+        includedPrimaryTypes: ['restaurant', 'cafe', 'bakery', 'bar'],
         locationBias: { center: NYC_CENTER, radius: 15000 },
         sessionToken: sessionToken.current,
       })
@@ -60,6 +61,15 @@ export default function PlacesSearch() {
 
   if (!placesLib) return null;
 
+  const matchRestaurant = async (restaurant: Restaurant): Promise<Restaurant> => {
+    const existing = state.restaurants.find((r) => r.id === restaurant.id);
+    if (existing) return existing;
+
+    await api.upsertRestaurant(restaurant);
+    const list = await refreshRestaurants();
+    return list.find((r) => r.id === restaurant.id) ?? restaurant;
+  };
+
   const selectSuggestion = (s: google.maps.places.AutocompleteSuggestion) => {
     const prediction = s.placePrediction;
     if (!prediction) return;
@@ -68,16 +78,12 @@ export default function PlacesSearch() {
     setSuggestions([]);
     prediction
       .toPlace()
-      .fetchFields({ fields: ['displayName', 'id'] })
-      .then(({ place }) => {
+      .fetchFields({ fields: ['*'] })
+      .then(async ({ place }) => {
         sessionToken.current = null; // session ends once a selection is fetched
-        const name = place.displayName ?? prediction.text.text;
-        const match = matchRestaurant(name);
-        if (match) {
-          store.set({ selectedId: match.id, mapFilter: [match.id] });
-        } else {
-          toast(`Ask Seated doesn't have "${name}" yet.`);
-        }
+        const restaurant = placeToRestaurant(place);
+        const match = await matchRestaurant(restaurant);
+        store.set({ selectedId: match.id, mapFilter: [match.id] });
       })
       .catch(() => toast('Could not look up that place.'));
   };
@@ -116,7 +122,6 @@ export default function PlacesSearch() {
               <li key={p.placeId || i}>
                 <button
                   type="button"
-                  // Fires before the input's onBlur closes the dropdown.
                   onMouseDown={(e) => e.preventDefault()}
                   onClick={() => selectSuggestion(s)}
                   className={styles.searchSuggestion}

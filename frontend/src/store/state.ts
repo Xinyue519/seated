@@ -7,6 +7,7 @@ import type {
   Preferences,
   Reservation,
   User,
+  Restaurant,
   WorkflowRun,
 } from '@/types';
 import type { Bootstrap } from '@/services/types';
@@ -35,6 +36,7 @@ export interface AppState {
   mapFilter: string[] | null;
   selectedId: string | null;
   toast: string;
+  restaurants: Restaurant[];
 }
 
 export function createInitialState(): AppState {
@@ -60,6 +62,7 @@ export function createInitialState(): AppState {
     mapFilter: null,
     selectedId: null,
     toast: '',
+    restaurants: [],
   };
 }
 
@@ -75,6 +78,7 @@ export function stateFromBootstrap(b: Bootstrap): AppState {
     visited: b.visited,
     reservations: b.reservations,
     past: b.past,
+    restaurants: b.restaurants,
     messages: [
       {
         id: 'welcome',

@@ -72,6 +72,7 @@ func (s *Server) Handler() http.Handler {
 
 	// Restaurants + reservations
 	mux.Handle("GET /api/restaurants", s.authed(s.listRestaurants))
+	mux.Handle("POST /api/restaurants/upsert", s.authed(s.upsertRestaurant))
 	mux.Handle("GET /api/restaurants/{id}/availability", s.authed(s.availability))
 	mux.Handle("GET /api/reservations", s.authed(s.listReservations))
 	mux.Handle("POST /api/reservations/{id}/cancel", s.authed(s.cancelReservation))

@@ -1,6 +1,6 @@
 import type { SeatedApi } from '@/services/types';
 import { UnauthorizedError } from '@/services/types';
-import { findRestaurant } from '@/data/restaurants';
+import { allRestaurants, findRestaurant, setRestaurants } from '@/data/restaurants';
 import { sleep } from '@/lib/dates';
 import { getSlots } from './provider';
 import { createMockBootstrap } from './seed';
@@ -58,5 +58,15 @@ export function createMockApi(): SeatedApi {
     updateProfile: latency,
     updatePreferences: latency,
     sendFeedback: latency,
+    async listRestaurants() {
+      await latency();
+      return allRestaurants();
+    },
+    async upsertRestaurant(restaurant) {
+      await latency();
+      const list = allRestaurants();
+      if (list.some((r) => r.id === restaurant.id)) return;
+      setRestaurants([...list, restaurant]);
+    },
   };
 }

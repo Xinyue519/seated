@@ -4,6 +4,7 @@ import { createServices, type Services } from '@/services';
 import { UnauthorizedError } from '@/services/types';
 import { setRestaurants } from '@/data/restaurants';
 import { config } from '@/config';
+import type { Restaurant } from '@/types';
 
 type Updater = Partial<AppState> | ((s: AppState) => Partial<AppState>);
 
@@ -18,6 +19,7 @@ interface StoreContextValue extends Services {
   toast: (message: string) => void;
   login: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
+  refreshRestaurants: () => Promise<Restaurant[]>;
 }
 
 const StoreContext = createContext<StoreContextValue | null>(null);
@@ -72,6 +74,14 @@ export function AppStoreProvider({ children }: { children: ReactNode }) {
     };
   }, [store, loadSession]);
 
+  const refreshRestaurants = useCallback(async () => {
+    if (!services) return ref.current.restaurants;
+    const list = await services.api.listRestaurants();
+    setRestaurants(list);
+    store.set({ restaurants: list });
+    return list;
+  }, [services, store]);
+
   const toastTimer = useRef<number | undefined>(undefined);
   const toast = useCallback(
     (message: string) => {
@@ -97,8 +107,8 @@ export function AppStoreProvider({ children }: { children: ReactNode }) {
   }, [services, store]);
 
   const value = useMemo(
-    () => (services ? { ...services, state, store, toast, login, logout } : null),
-    [services, state, store, toast, login, logout],
+    () => (services ? { ...services, state, store, toast, login, logout, refreshRestaurants } : null),
+    [services, state, store, toast, login, logout, refreshRestaurants],
   );
 
   if (!value || restoring) {

@@ -112,6 +112,29 @@ func (r *Repo) Get(ctx context.Context, id string) (*Restaurant, error) {
 	return &x, nil
 }
 
+func (r *Repo) Insert(ctx context.Context, restaurant Restaurant) error {
+	_, err := r.pool.Exec(ctx, `INSERT INTO restaurants (id, name, cuisine, cuisine_group, neighborhood, price_level, lat, lng, location,tags, 
+	description, image_url, vegetarian, website) 
+	VALUES ($1, $2, $3, $4, $5, $6, $7, $8, ST_SetSRID(ST_MakePoint($8, $7), 4326)::geography, $9, $10, $11, $12, $13)`, 
+	restaurant.ID, restaurant.Name, restaurant.Cuisine, restaurant.Group, restaurant.Neighborhood, restaurant.PriceLevel, 
+	restaurant.Lat, restaurant.Lng, restaurant.Tags, restaurant.Description, restaurant.ImageURL, restaurant.Vegetarian, restaurant.Website)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (r *Repo) Upsert(ctx context.Context, restaurant Restaurant) error {
+	_, err := r.Get(ctx, restaurant.ID)
+	if err == nil {
+		return nil
+	}
+	if !errors.Is(err, ErrNotFound) {
+		return err
+	}
+	return r.Insert(ctx, restaurant)
+}
+
 func (r *Repo) GetMany(ctx context.Context, ids []string) (map[string]Restaurant, error) {
 	rows, err := r.pool.Query(ctx, `SELECT `+cols+` FROM restaurants r WHERE r.id = ANY($1)`, ids)
 	if err != nil {

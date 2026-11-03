@@ -30,6 +30,8 @@ export interface SeatedApi {
   updateProfile(user: User): Promise<void>;
   updatePreferences(preferences: Preferences): Promise<void>;
   sendFeedback(visitId: string, value: 'up' | 'down'): Promise<void>;
+  listRestaurants(): Promise<Restaurant[]>;
+  upsertRestaurant(restaurant: Restaurant): Promise<void>;
 }
 
 /**

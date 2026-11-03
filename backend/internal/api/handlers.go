@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"strings"
 	"time"
+	// "log/slog"
 
 	"seated/internal/agent"
 	"seated/internal/reservations"
@@ -213,6 +214,20 @@ func (s *Server) listRestaurants(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	writeJSON(w, http.StatusOK, map[string]any{"restaurants": list})
+}
+
+func (s *Server) upsertRestaurant(w http.ResponseWriter, r *http.Request) {
+	var restaurant restaurants.Restaurant
+	if err := readJSON(r, &restaurant); err != nil {
+		writeError(w, http.StatusBadRequest, "invalid restaurant")
+		return
+	}
+	err := s.restaurants.Upsert(r.Context(), restaurant)
+	if err != nil {
+		s.serverError(w, err)
+		return
+	}
+	w.WriteHeader(http.StatusNoContent)
 }
 
 func (s *Server) availability(w http.ResponseWriter, r *http.Request) {

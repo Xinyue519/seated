@@ -41,6 +41,7 @@ export const NEIGHBORHOODS: Record<string, [lat: number, lng: number]> = {
 };
 
 export const CUISINE_LABELS: Record<CuisineGroup, string> = {
+  unknown: 'Unknown',
   italian: 'Italian',
   pizza: 'Pizza',
   french: 'French',
@@ -51,4 +52,6 @@ export const CUISINE_LABELS: Record<CuisineGroup, string> = {
   deli: 'Deli',
   american: 'New American',
   vegetarian: 'Vegetarian',
+  cafe: 'Cafe',
+  bakery: 'Bakery',
 };

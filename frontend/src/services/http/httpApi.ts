@@ -1,5 +1,6 @@
 import type { Bootstrap, SeatedApi } from '../types';
 import { request } from './client';
+import type { Restaurant } from '@/types';
 
 /**
  * Go backend implementation. Endpoint paths are the proposed contract;
@@ -21,4 +22,9 @@ export const httpApi: SeatedApi = {
   updateProfile: (user) => request('PATCH', '/me', user),
   updatePreferences: (preferences) => request('PUT', '/me/preferences', preferences),
   sendFeedback: (visitId, value) => request('POST', `/me/visits/${encodeURIComponent(visitId)}/feedback`, { value }),
+  listRestaurants: async () => {
+    const res = await request<{restaurants: Restaurant[]}>('GET', '/restaurants');
+    return res.restaurants;
+  },
+  upsertRestaurant: (restaurant) => request('POST', '/restaurants/upsert', restaurant),
 };

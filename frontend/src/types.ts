@@ -1,4 +1,5 @@
 export type CuisineGroup =
+  | 'unknown'
   | 'italian'
   | 'pizza'
   | 'french'
@@ -8,9 +9,39 @@ export type CuisineGroup =
   | 'thai'
   | 'deli'
   | 'american'
-  | 'vegetarian';
+  | 'vegetarian'
+  | 'cafe'
+  | 'bakery';
+
+export const NYC_CENTER = { lat: 40.735, lng: -73.995 };
 
 export type PriceLevel = 1 | 2 | 3 | 4;
+
+export const PRICE_MAP: Record<string, PriceLevel> = {
+  FREE: 1,
+  INEXPENSIVE: 1,
+  MODERATE: 2,
+  EXPENSIVE: 3,
+  VERY_EXPENSIVE: 4,
+};
+
+export const CUISINE_MAP: Record<string, CuisineGroup> = {
+  italian_restaurant: 'italian',
+  pizza_restaurant: 'pizza',
+  french_restaurant: 'french',
+  japanese_restaurant: 'japanese',
+  mexican_restaurant: 'mexican',
+  korean_restaurant: 'korean',
+  thai_restaurant: 'thai',
+  deli: 'deli',
+  american_restaurant: 'american',
+  vegetarian_restaurant: 'vegetarian',
+  fast_food_restaurant: 'american',
+  diner: 'american',
+  cafe: 'cafe',
+  coffee_shop: 'cafe',
+  bakery: 'bakery',
+};
 
 /** Mirrors the internal restaurant schema in the build plan (subset used by the UI). */
 export interface Restaurant {
